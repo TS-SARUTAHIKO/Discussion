@@ -3,8 +3,7 @@
 表示フォーマットを決める前の、確認用の仮の一覧です。
 
 - 原則として、試験を実施している団体の公式サイトにリンクしています（民間の過去問サイトは使っていません）
-- 公式サイトから削除されている年度は、インターネットアーカイブ（web.archive.org）に保存された当時の公式ページにリンクし、「アーカイブ」と書いています
-- 見つからなかった年度は空欄です
+- 公式サイトから削除されている年度や、公開されていない年度は空欄です
 - 「10年分」は、2026年10月14日時点ですでに実施された直近10回分です
 
 ## 司法書士試験
@@ -21,10 +20,10 @@
 | 2021（令和3年度） |  | [リンク](https://www.moj.go.jp/MINJI/minji05_00404.html) |  |
 | 2020（令和2年度） |  | [リンク](https://www.moj.go.jp/MINJI/minji05_00100.html) |  |
 | 2019（令和元年度） |  | [リンク](https://www.moj.go.jp/MINJI/minji05_00386.html) |  |
-| 2018（平成30年度） |  | [リンク](https://web.archive.org/web/20220819140237/https://www.moj.go.jp/MINJI/minji05_00349.html) | アーカイブ |
-| 2017（平成29年度） |  | [リンク](https://web.archive.org/web/20210204093121/http://www.moj.go.jp/MINJI/minji05_00296.html) | アーカイブ |
+| 2018（平成30） | | | 公式サイトに掲載なし |
+| 2017（平成29） | | | 公式サイトに掲載なし |
 
-※平成29・30年度は法務省のページが削除済みのため、インターネットアーカイブに保存された当時の公式ページにリンクしています。
+※平成29・30年度は法務省のサイトから削除済みのため空欄です。
 
 ## 行政書士試験
 
@@ -40,10 +39,10 @@
 | 2020（令和2年度） | 問題PDF | [リンク](https://gyosei-shiken.or.jp/pdf/r2_mondai.pdf) |  |
 | 2019（令和元年度） | 問題PDF | [リンク](https://gyosei-shiken.or.jp/pdf/r1_mondai.pdf) |  |
 | 2018（平成30年度） | 問題PDF | [リンク](https://gyosei-shiken.or.jp/pdf/h30_mondai.pdf) |  |
-| 2017（平成29年度） | 問題PDF | [リンク](https://web.archive.org/web/20190224234607/https://gyosei-shiken.or.jp/pdf/h29_mondai.pdf) | アーカイブ |
-| 2016（平成28年度） | 問題PDF | [リンク](https://web.archive.org/web/20210825033731/https://gyosei-shiken.or.jp/pdf/h28_mondai.pdf) | アーカイブ |
+| 2017（平成29） | | | 公式サイトに掲載なし |
+| 2016（平成28） | | | 公式サイトに掲載なし |
 
-※令和8年度試験（11月実施予定）はまだ実施されていないため、平成28〜令和7年度の10回分です。平成28・29年度の問題PDFは公式サイトから削除済みのため、アーカイブに保存された公式PDFにリンクしています。
+※令和8年度試験（11月実施予定）はまだ実施されていないため、平成28〜令和7年度が対象です。平成28・29年度は公式サイトから削除済みのため空欄です。
 
 ## 宅建試験（宅地建物取引士試験）
 
@@ -140,7 +139,7 @@
 | 2018（平成30年度） | [A](https://www.j-smeca.jp/attach/test/shikenmondai/1ji2018/A1ji2018.pdf) [B](https://www.j-smeca.jp/attach/test/shikenmondai/1ji2018/B1ji2018.pdf) [C](https://www.j-smeca.jp/attach/test/shikenmondai/1ji2018/C1ji2018.pdf) [D](https://www.j-smeca.jp/attach/test/shikenmondai/1ji2018/D1ji2018.pdf) [E](https://www.j-smeca.jp/attach/test/shikenmondai/1ji2018/E1ji2018.pdf) [F](https://www.j-smeca.jp/attach/test/shikenmondai/1ji2018/F1ji2018.pdf) [G](https://www.j-smeca.jp/attach/test/shikenmondai/1ji2018/G1ji2018.pdf) | [A](https://www.j-smeca.jp/attach/test/shikenmondai/2ji2018/a2ji2018.pdf) [B](https://www.j-smeca.jp/attach/test/shikenmondai/2ji2018/b2ji2018.pdf) [C](https://www.j-smeca.jp/attach/test/shikenmondai/2ji2018/c2ji2018.pdf) [D](https://www.j-smeca.jp/attach/test/shikenmondai/2ji2018/d2ji2018.pdf) |
 | 2017（平成29年度） | [A](https://www.j-smeca.jp/attach/test/shikenmondai/1ji2017/a1ji2017.pdf) [B](https://www.j-smeca.jp/attach/test/shikenmondai/1ji2017/b1ji2017.pdf) [C](https://www.j-smeca.jp/attach/test/shikenmondai/1ji2017/c1ji2017.pdf) [D](https://www.j-smeca.jp/attach/test/shikenmondai/1ji2017/d1ji2017.pdf) [E](https://www.j-smeca.jp/attach/test/shikenmondai/1ji2017/e1ji2017.pdf) [F](https://www.j-smeca.jp/attach/test/shikenmondai/1ji2017/f1ji2017.pdf) [G](https://www.j-smeca.jp/attach/test/shikenmondai/1ji2017/g1ji2017.pdf) | [A](https://www.j-smeca.jp/attach/test/shikenmondai/2ji2017/a2ji2017.pdf) [B](https://www.j-smeca.jp/attach/test/shikenmondai/2ji2017/b2ji2017.pdf) [C](https://www.j-smeca.jp/attach/test/shikenmondai/2ji2017/c2ji2017.pdf) [D](https://www.j-smeca.jp/attach/test/shikenmondai/2ji2017/d2ji2017.pdf) |
 
-※協会のサイト（j-smeca.jp）にこの環境から接続できなかったため、2024年9月時点のアーカイブに残っていた公式PDFのURLを載せています（リンク先は協会の公式サイトです）。それ以降に公開された分（2024年度2次、2025年度、2026年度1次）は確認できなかったため空欄です。2026年度2次は、まだ実施されていません。
+※協会のサイト（j-smeca.jp）にこの環境から接続できなかったため、2024年9月時点で協会のページに載っていた公式PDFのURLを載せています。それ以降に公開された分（2024年度2次、2025年度、2026年度1次）は確認できなかったため空欄です。2026年度2次はまだ実施されていません。
 
 ## 土地家屋調査士試験
 
@@ -155,11 +154,11 @@
 | 2021（令和3年度） |  | [リンク](https://www.moj.go.jp/MINJI/minji05_00412.html) |  |
 | 2020（令和2年度） |  | [リンク](https://www.moj.go.jp/MINJI/minji05_00119.html) |  |
 | 2019（令和元年度） |  | [リンク](https://www.moj.go.jp/MINJI/minji05_00001.html) |  |
-| 2018（平成30年度） |  | [リンク](https://web.archive.org/web/20211207141634/https://www.moj.go.jp/MINJI/minji05_00362.html) | アーカイブ |
-| 2017（平成29年度） |  | [リンク](https://web.archive.org/web/20220308090702/https://www.moj.go.jp/MINJI/minji05_00301.html) | アーカイブ |
-| 2016（平成28年度） |  | [リンク](https://web.archive.org/web/20231211033622/http://www.moj.go.jp/MINJI/minji05_00265.html) | アーカイブ |
+| 2018（平成30） | | | 公式サイトに掲載なし |
+| 2017（平成29） | | | 公式サイトに掲載なし |
+| 2016（平成28） | | | 公式サイトに掲載なし |
 
-※令和8年度試験（10月実施予定）はまだ実施されていないため、平成28〜令和7年度の10回分です。平成28〜30年度は法務省のページが削除済みのため、アーカイブに保存された当時の公式ページにリンクしています。
+※令和8年度試験（10月実施予定）はまだ実施されていないため、平成28〜令和7年度が対象です。平成28〜30年度は法務省のサイトから削除済みのため空欄です。
 
 ## 不動産鑑定士試験
 
@@ -172,13 +171,13 @@
 | 2024（令和6年） | 短答式・論文式 | [リンク](https://www.mlit.go.jp/totikensangyo/kanteishi/shiken02.html) |  |
 | 2023（令和5年） | 短答式・論文式 | [リンク](https://www.mlit.go.jp/totikensangyo/kanteishi/shiken02.html) |  |
 | 2022（令和4年） | 短答式・論文式 | [リンク](https://www.mlit.go.jp/totikensangyo/kanteishi/shiken02.html) |  |
-| 2021（令和3年） | 短答式・論文式 | [リンク](https://web.archive.org/web/20220528201557/https://www.mlit.go.jp/totikensangyo/kanteishi/shiken02.html) | アーカイブ |
-| 2020（令和2年） | 短答式・論文式 | [リンク](https://web.archive.org/web/20220528201557/https://www.mlit.go.jp/totikensangyo/kanteishi/shiken02.html) | アーカイブ |
-| 2019（令和元年） | 短答式・論文式 | [リンク](https://web.archive.org/web/20220528201557/https://www.mlit.go.jp/totikensangyo/kanteishi/shiken02.html) | アーカイブ |
-| 2018（平成30年） | 短答式・論文式 | [リンク](https://web.archive.org/web/20220528201557/https://www.mlit.go.jp/totikensangyo/kanteishi/shiken02.html) | アーカイブ |
-| 2017（平成29年） | 短答式・論文式 | [リンク](https://web.archive.org/web/20220528201557/https://www.mlit.go.jp/totikensangyo/kanteishi/shiken02.html) | アーカイブ |
+| 2021（令和3） | | | 公式サイトに掲載なし |
+| 2020（令和2） | | | 公式サイトに掲載なし |
+| 2019（令和元） | | | 公式サイトに掲載なし |
+| 2018（平成30） | | | 公式サイトに掲載なし |
+| 2017（平成29） | | | 公式サイトに掲載なし |
 
-※国交省のページは「直近5年分」を1つのページにまとめて掲載しています（令和4〜8年）。平成29年〜令和3年は、その5年分が載っていた2022年5月時点のアーカイブ版にリンクしています。
+※国交省は「直近5年分」だけを1つのページにまとめて掲載しているため、令和4〜8年はすべて同じページへのリンクです。平成29年〜令和3年は掲載が終わっているため空欄です。
 
 ## 司法試験
 
