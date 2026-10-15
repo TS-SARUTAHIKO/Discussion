@@ -1,0 +1,228 @@
+<title>刑法テーマ樹形図</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400&display=swap">
+<style>
+/* Layout: 左に樹形図、右に選んだテーマの詳細。狭い画面では縦に積む */
+:root {
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --fg: #1d2433;
+  --muted: #5d6677;
+  --line: #d9dde5;
+  --structure: #27408b;
+  --structure-soft: #e7ebf7;
+  --issue: #3d6b4f;
+  --issue-soft: #e5f0e9;
+  --poly: #9a5b00;
+  --poly-soft: #fbefd9;
+  --hit: #fff1a8;
+  --font-display: "Shippori Mincho B1", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --font-body: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12151c; --surface: #1a1f29; --fg: #e4e8ef; --muted: #9aa3b4; --line: #2e3542;
+    --structure: #9db2f0; --structure-soft: #232d48; --issue: #8fc7a4; --issue-soft: #1f3328;
+    --poly: #f0b860; --poly-soft: #3a2c14; --hit: #5a4b10; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12151c; --surface: #1a1f29; --fg: #e4e8ef; --muted: #9aa3b4; --line: #2e3542;
+  --structure: #9db2f0; --structure-soft: #232d48; --issue: #8fc7a4; --issue-soft: #1f3328;
+  --poly: #f0b860; --poly-soft: #3a2c14; --hit: #5a4b10; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 40px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 16px; }
+header h1 { font-family: var(--font-display); font-size: 1.6rem; margin: 0; text-wrap: balance; }
+header p { margin: 4px 0 0; color: var(--muted); font-size: 0.88rem; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 0.82rem; color: var(--muted); margin-top: 8px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.toolbar input {
+  flex: 1 1 220px; min-width: 0; font: inherit; padding: 8px 12px; border: 1px solid var(--line);
+  border-radius: 6px; background: var(--surface); color: var(--fg);
+}
+button {
+  font: inherit; font-size: 0.85rem; padding: 7px 12px; border: 1px solid var(--line); border-radius: 6px;
+  background: var(--surface); color: var(--fg); cursor: pointer;
+}
+button:hover { border-color: var(--structure); }
+:focus-visible { outline: 2px solid var(--structure); outline-offset: 2px; }
+.main { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 16px; align-items: start; }
+@media (max-width: 820px) { .main { grid-template-columns: minmax(0, 1fr); } .detail { position: static; order: -1; } }
+.tree { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 8px; overflow-x: auto; }
+.tree ul { list-style: none; margin: 0; padding-left: 18px; border-left: 1px dotted var(--line); margin-left: 9px; }
+.tree > ul { border-left: 0; padding-left: 0; margin-left: 0; }
+.tree li { margin: 1px 0; }
+details > summary { list-style: none; cursor: pointer; }
+details > summary::-webkit-details-marker { display: none; }
+.row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; padding: 2px 4px; border-radius: 4px; }
+.caret { width: 14px; flex: none; color: var(--muted); font-size: 0.7rem; text-align: center; transition: transform .12s; }
+details[open] > summary .caret { transform: rotate(90deg); }
+@media (prefers-reduced-motion: reduce) { .caret { transition: none; } }
+.name { cursor: pointer; border-radius: 3px; padding: 0 2px; }
+.name.s { font-weight: 700; color: var(--structure); }
+.name.i { color: var(--fg); }
+.name.selected { background: var(--structure-soft); outline: 1px solid var(--structure); }
+.name.hit { background: var(--hit); }
+.chip { font-size: 0.7rem; padding: 0 6px; border-radius: 999px; line-height: 1.6; white-space: nowrap; }
+.chip.i { background: var(--issue-soft); color: var(--issue); }
+.chip.poly { background: var(--poly-soft); color: var(--poly); }
+.dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.detail {
+  position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px);
+  background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px; min-width: 0;
+}
+.detail h2 { font-family: var(--font-display); font-size: 1.25rem; margin: 0 0 2px; text-wrap: balance; }
+.detail .id { font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); word-break: break-all; }
+.detail dl { margin: 12px 0 0; display: grid; gap: 10px; }
+.detail dt { font-size: 0.72rem; letter-spacing: 0.08em; color: var(--muted); }
+.detail dd { margin: 2px 0 0; display: flex; flex-wrap: wrap; gap: 4px 6px; }
+.detail dd.memo { display: block; font-size: 0.9rem; }
+.link { color: var(--structure); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; background: none; border: 0; padding: 0; font-size: 0.9rem; }
+.tag { font-size: 0.85rem; background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 0 6px; }
+.none { color: var(--muted); font-size: 0.85rem; }
+.empty { color: var(--muted); padding: 8px; }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>刑法テーマ樹形図</h1>
+    <p id="stats"></p>
+    <div class="legend">
+      <span><b style="color:var(--structure)">太字の紺</b>＝構造エリア</span>
+      <span><span class="chip i">論点1</span>＝論点エリア（数字は段）</span>
+      <span><span class="chip poly">親2</span>＝親を複数持つ（それぞれの親の下に出てくる）</span>
+    </div>
+  </header>
+  <div class="toolbar">
+    <input id="q" type="search" placeholder="名前・エイリアス・ID で絞り込み" aria-label="絞り込み">
+    <button id="open-all" type="button">すべて開く</button>
+    <button id="close-issues" type="button">論点を閉じる</button>
+  </div>
+  <div class="main">
+    <nav class="tree" id="tree" aria-label="テーマの樹形図"></nav>
+    <aside class="detail" id="detail" aria-live="polite"></aside>
+  </div>
+</div>
+
+<script>
+const DATA = [{"id": "keiho", "name": "刑法", "kind": "structure", "parents": [], "aliases": [], "related": [], "memo": ""}, {"id": "keiho-souron", "name": "刑法総論", "kind": "structure", "parents": ["keiho"]}, {"id": "keiho-kiso", "name": "刑法の基礎", "kind": "structure", "parents": ["keiho-souron"], "memo": "刑法の機能・罪刑法定主義・適用範囲など、犯罪論に入る前の部分の枠"}, {"id": "keiho-zaikei-houtei-shugi", "name": "罪刑法定主義", "kind": "structure", "parents": ["keiho-kiso"]}, {"id": "keiho-tekiyou-han-i", "name": "刑法の適用範囲", "kind": "structure", "parents": ["keiho-kiso"]}, {"id": "keiho-kousei-youken", "name": "構成要件", "kind": "structure", "parents": ["keiho-souron"], "memo": "「構成要件該当性」はエイリアスにしない（構成要件という枠と、それに当たるかという判断は別の意味）"}, {"id": "keiho-jikkou-koui", "name": "実行行為", "kind": "structure", "parents": ["keiho-kousei-youken"]}, {"id": "keiho-inga-kankei", "name": "因果関係（刑法）", "kind": "structure", "parents": ["keiho-kousei-youken"], "memo": "民法（不法行為）にも「因果関係」があり意味が違うので、科目名を添えた"}, {"id": "keiho-koi", "name": "故意（刑法）", "kind": "structure", "parents": ["keiho-kousei-youken", "keiho-sekinin"], "memo": "故意を構成要件の要素とみるか、責任の要素とみるかで体系上の位置が分かれる。両方を親にした。民法の故意と区別するため科目名を添えた"}, {"id": "keiho-sakugo", "name": "錯誤（刑法）", "kind": "structure", "parents": ["keiho-koi"], "memo": "民法の錯誤（95条）と区別するため科目名を添えた"}, {"id": "keiho-kashitsu", "name": "過失（刑法）", "kind": "structure", "parents": ["keiho-kousei-youken", "keiho-sekinin"], "memo": "故意と同じく、体系上の位置が学説で分かれるので両方を親にした"}, {"id": "keiho-ihousei", "name": "違法性（刑法）", "kind": "structure", "parents": ["keiho-souron"], "memo": "民法（不法行為）の違法性と区別するため科目名を添えた"}, {"id": "keiho-ihousei-sokyaku-jiyuu", "name": "違法性阻却事由", "kind": "structure", "parents": ["keiho-ihousei"]}, {"id": "keiho-seitou-koui", "name": "正当行為", "kind": "structure", "parents": ["keiho-ihousei-sokyaku-jiyuu"], "memo": "35条（法令行為・正当業務行為）"}, {"id": "keiho-seitou-boui", "name": "正当防衛", "kind": "structure", "parents": ["keiho-ihousei-sokyaku-jiyuu"], "memo": "民法720条にも正当防衛があるが、刑法での使い方が中心なので名前に科目を添えていない（メモ参照）"}, {"id": "keiho-kinkyuu-hinan", "name": "緊急避難", "kind": "structure", "parents": ["keiho-ihousei-sokyaku-jiyuu"], "memo": "正当防衛と同じく、民法側を作るときに「緊急避難（民法）」を立てる想定"}, {"id": "keiho-sekinin", "name": "責任（刑法）", "kind": "structure", "parents": ["keiho-souron"], "memo": "民法の「責任」（債務と責任など）と意味が違うので科目名を添えた"}, {"id": "keiho-sekinin-nouryoku", "name": "責任能力", "kind": "structure", "parents": ["keiho-sekinin"]}, {"id": "keiho-misui", "name": "未遂犯", "kind": "structure", "parents": ["keiho-souron"], "aliases": ["未遂"]}, {"id": "keiho-kyouhan", "name": "共犯", "kind": "structure", "parents": ["keiho-souron"], "memo": "共同正犯を含む広い意味の共犯（広義の共犯）の枠"}, {"id": "keiho-kyoudou-seihan", "name": "共同正犯", "kind": "structure", "parents": ["keiho-kyouhan"]}, {"id": "keiho-kyougi-no-kyouhan", "name": "狭義の共犯", "kind": "structure", "parents": ["keiho-kyouhan"], "memo": "教唆犯と幇助犯をまとめる枠"}, {"id": "keiho-kyousa-han", "name": "教唆犯", "kind": "structure", "parents": ["keiho-kyougi-no-kyouhan"]}, {"id": "keiho-houjo-han", "name": "幇助犯", "kind": "structure", "parents": ["keiho-kyougi-no-kyouhan"], "aliases": ["従犯"], "memo": "62条の条文上の呼び名は「従犯」。指すものは同じとみてエイリアスにした"}, {"id": "keiho-zaisuu", "name": "罪数", "kind": "structure", "parents": ["keiho-souron"]}, {"id": "keiho-keibatsu", "name": "刑罰", "kind": "structure", "parents": ["keiho-souron"], "memo": "刑の種類・執行猶予・量刑など"}, {"id": "keiho-kakuron", "name": "刑法各論", "kind": "structure", "parents": ["keiho"]}, {"id": "keiho-kojinteki-houeki", "name": "個人的法益に対する罪", "kind": "structure", "parents": ["keiho-kakuron"]}, {"id": "keiho-seimei-shintai", "name": "生命・身体に対する罪", "kind": "structure", "parents": ["keiho-kojinteki-houeki"]}, {"id": "keiho-jiyuu", "name": "自由に対する罪", "kind": "structure", "parents": ["keiho-kojinteki-houeki"], "memo": "逮捕・監禁、脅迫・強要、略取・誘拐など"}, {"id": "keiho-seiteki-jiyuu", "name": "性的自由に対する罪", "kind": "structure", "parents": ["keiho-jiyuu"], "memo": "2023年改正で不同意性交等罪などに変わった。枠の名前をどうするかは人が確認（メモ参照）"}, {"id": "keiho-juukyo-shinnyuu", "name": "住居を侵す罪", "kind": "structure", "parents": ["keiho-kojinteki-houeki"], "memo": "自由に対する罪の一つとして扱う本もある。保護法益の争いがあるので、独立させて個人的法益の直下に置いた"}, {"id": "keiho-meiyo", "name": "名誉に対する罪", "kind": "structure", "parents": ["keiho-kojinteki-houeki"]}, {"id": "keiho-shinyou-gyoumu", "name": "信用・業務に対する罪", "kind": "structure", "parents": ["keiho-kojinteki-houeki"]}, {"id": "keiho-zaisan", "name": "財産に対する罪", "kind": "structure", "parents": ["keiho-kojinteki-houeki"], "aliases": ["財産犯"], "memo": "「財産犯」は略称とみてエイリアスにした"}, {"id": "keiho-settou", "name": "窃盗罪", "kind": "structure", "parents": ["keiho-zaisan"]}, {"id": "keiho-goutou", "name": "強盗罪", "kind": "structure", "parents": ["keiho-zaisan"]}, {"id": "keiho-sagi", "name": "詐欺罪", "kind": "structure", "parents": ["keiho-zaisan"]}, {"id": "keiho-kyoukatsu", "name": "恐喝罪", "kind": "structure", "parents": ["keiho-zaisan"]}, {"id": "keiho-ouryou", "name": "横領罪", "kind": "structure", "parents": ["keiho-zaisan"]}, {"id": "keiho-hainin", "name": "背任罪", "kind": "structure", "parents": ["keiho-zaisan"]}, {"id": "keiho-touhin", "name": "盗品等に関する罪", "kind": "structure", "parents": ["keiho-zaisan"]}, {"id": "keiho-kiki-intoku", "name": "毀棄・隠匿の罪", "kind": "structure", "parents": ["keiho-zaisan"]}, {"id": "keiho-shakaiteki-houeki", "name": "社会的法益に対する罪", "kind": "structure", "parents": ["keiho-kakuron"]}, {"id": "keiho-koukyou-no-anzen", "name": "公共の安全に対する罪", "kind": "structure", "parents": ["keiho-shakaiteki-houeki"]}, {"id": "keiho-houka", "name": "放火罪", "kind": "structure", "parents": ["keiho-koukyou-no-anzen"]}, {"id": "keiho-gizou", "name": "偽造の罪", "kind": "structure", "parents": ["keiho-shakaiteki-houeki"]}, {"id": "keiho-bunsho-gizou", "name": "文書偽造罪", "kind": "structure", "parents": ["keiho-gizou"]}, {"id": "keiho-fuuzoku", "name": "風俗に対する罪", "kind": "structure", "parents": ["keiho-shakaiteki-houeki"], "memo": "わいせつ・賭博など"}, {"id": "keiho-kokkateki-houeki", "name": "国家的法益に対する罪", "kind": "structure", "parents": ["keiho-kakuron"], "memo": "内乱・外患など国家の存立に対する罪は、短答でほとんど問われないので今回は立てていない"}, {"id": "keiho-kokka-no-sayou", "name": "国家の作用に対する罪", "kind": "structure", "parents": ["keiho-kokkateki-houeki"]}, {"id": "keiho-koumu-bougai", "name": "公務の執行を妨害する罪", "kind": "structure", "parents": ["keiho-kokka-no-sayou"]}, {"id": "keiho-shihou-sayou", "name": "司法作用に対する罪", "kind": "structure", "parents": ["keiho-kokka-no-sayou"], "memo": "犯人蔵匿・証拠隠滅・偽証など"}, {"id": "keiho-oshoku", "name": "汚職の罪", "kind": "structure", "parents": ["keiho-kokka-no-sayou"], "memo": "職権濫用と賄賂"}, {"id": "ruisui-kaishaku-no-kinshi", "name": "類推解釈の禁止", "kind": "issue", "parents": ["keiho-zaikei-houtei-shugi"]}, {"id": "keibatsu-houki-no-meikakusei", "name": "刑罰法規の明確性", "kind": "issue", "parents": ["keiho-zaikei-houtei-shugi"], "related": ["meikakusei-no-gensoku"], "memo": "憲法の「明確性の原則」と関連でつないだ"}, {"id": "sokyuu-shobatsu-no-kinshi", "name": "遡及処罰の禁止", "kind": "issue", "parents": ["keiho-zaikei-houtei-shugi"], "aliases": ["事後法の禁止"], "memo": "「事後法の禁止」は同じ原則の別の呼び名とみてエイリアスにした。人の確認が必要"}, {"id": "kokugai-han", "name": "国外犯", "kind": "issue", "parents": ["keiho-tekiyou-han-i"]}, {"id": "fusakui-han", "name": "不作為犯", "kind": "issue", "parents": ["keiho-jikkou-koui"]}, {"id": "fushinsei-fusakui-han-no-sakui-gimu", "name": "不真正不作為犯の作為義務", "kind": "issue", "parents": ["fusakui-han"]}, {"id": "kansetsu-seihan", "name": "間接正犯", "kind": "issue", "parents": ["keiho-jikkou-koui", "keiho-kyouhan"], "memo": "実行行為（正犯性）の問題であり、共犯との区別の問題でもある"}, {"id": "inga-kankei-no-handan-kijun", "name": "因果関係の判断基準", "kind": "issue", "parents": ["keiho-inga-kankei"]}, {"id": "jouken-setsu", "name": "条件説", "kind": "issue", "parents": ["inga-kankei-no-handan-kijun"]}, {"id": "soutou-inga-kankei-setsu", "name": "相当因果関係説", "kind": "issue", "parents": ["inga-kankei-no-handan-kijun"]}, {"id": "kiken-no-genjitsuka", "name": "危険の現実化", "kind": "issue", "parents": ["inga-kankei-no-handan-kijun"], "memo": "近年の判例の判断の枠組み。学説の名前ではないが、判断基準の一つとして説と並べた"}, {"id": "kainyuu-jijou", "name": "介在事情と因果関係", "kind": "issue", "parents": ["keiho-inga-kankei"]}, {"id": "mihitsu-no-koi", "name": "未必の故意", "kind": "issue", "parents": ["keiho-koi"]}, {"id": "gutaiteki-jijitsu-no-sakugo", "name": "具体的事実の錯誤", "kind": "issue", "parents": ["keiho-sakugo"]}, {"id": "kyakutai-no-sakugo", "name": "客体の錯誤", "kind": "issue", "parents": ["gutaiteki-jijitsu-no-sakugo"]}, {"id": "houhou-no-sakugo", "name": "方法の錯誤", "kind": "issue", "parents": ["gutaiteki-jijitsu-no-sakugo"], "aliases": ["打撃の錯誤"], "memo": "「打撃の錯誤」は同じものの別の呼び名とみてエイリアスにした"}, {"id": "houteiteki-fugou-setsu", "name": "法定的符合説", "kind": "issue", "parents": ["houhou-no-sakugo"], "memo": "客体の錯誤でも問題になるが、論点は親を1つしか持てないので、争いが目立つ方法の錯誤の下に置いた"}, {"id": "gutaiteki-fugou-setsu", "name": "具体的符合説", "kind": "issue", "parents": ["houhou-no-sakugo"]}, {"id": "inga-kankei-no-sakugo", "name": "因果関係の錯誤", "kind": "issue", "parents": ["gutaiteki-jijitsu-no-sakugo"], "related": ["keiho-inga-kankei"]}, {"id": "chuushouteki-jijitsu-no-sakugo", "name": "抽象的事実の錯誤", "kind": "issue", "parents": ["keiho-sakugo"]}, {"id": "ihousei-no-sakugo", "name": "違法性の錯誤", "kind": "issue", "parents": ["keiho-sakugo", "keiho-sekinin"], "aliases": ["法律の錯誤"], "related": ["ihousei-no-ishiki"], "memo": "錯誤の一種だが、責任（違法性の意識）の問題でもある。「法律の錯誤」は同じものの別の呼び名とみた。人の確認が必要"}, {"id": "kashitsu-han-no-kouzou", "name": "過失犯の構造", "kind": "issue", "parents": ["keiho-kashitsu"]}, {"id": "kyuu-kashitsu-ron", "name": "旧過失論", "kind": "issue", "parents": ["kashitsu-han-no-kouzou"]}, {"id": "shin-kashitsu-ron", "name": "新過失論", "kind": "issue", "parents": ["kashitsu-han-no-kouzou"]}, {"id": "shinrai-no-gensoku", "name": "信頼の原則", "kind": "issue", "parents": ["keiho-kashitsu"]}, {"id": "ihousei-no-honshitsu", "name": "違法性の本質", "kind": "issue", "parents": ["keiho-ihousei"]}, {"id": "koui-mukachi-ron", "name": "行為無価値論", "kind": "issue", "parents": ["ihousei-no-honshitsu"]}, {"id": "kekka-mukachi-ron", "name": "結果無価値論", "kind": "issue", "parents": ["ihousei-no-honshitsu"]}, {"id": "kabatsuteki-ihousei", "name": "可罰的違法性", "kind": "issue", "parents": ["keiho-ihousei"]}, {"id": "higaisha-no-doui", "name": "被害者の同意", "kind": "issue", "parents": ["keiho-ihousei-sokyaku-jiyuu", "keiho-kousei-youken"], "memo": "違法性阻却として扱うのが基本だが、罪によっては構成要件に当たらなくなる場面がある"}, {"id": "shingai-no-kyuuhakusei", "name": "侵害の急迫性", "kind": "issue", "parents": ["keiho-seitou-boui"]}, {"id": "jishou-shingai", "name": "自招侵害", "kind": "issue", "parents": ["keiho-seitou-boui"]}, {"id": "bouei-no-ishi", "name": "防衛の意思", "kind": "issue", "parents": ["keiho-seitou-boui"]}, {"id": "kajou-boui", "name": "過剰防衛", "kind": "issue", "parents": ["keiho-seitou-boui", "keiho-sekinin"], "memo": "36条2項で刑を減免できる理由を、違法の減少とみるか責任の減少とみるかで分かれる"}, {"id": "gosou-boui", "name": "誤想防衛", "kind": "issue", "parents": ["keiho-seitou-boui", "keiho-sakugo"]}, {"id": "gosou-kajou-boui", "name": "誤想過剰防衛", "kind": "issue", "parents": ["keiho-seitou-boui", "keiho-sakugo"], "related": ["gosou-boui", "kajou-boui"]}, {"id": "kinkyuu-hinan-no-houteki-seikaku", "name": "緊急避難の法的性格", "kind": "issue", "parents": ["keiho-kinkyuu-hinan"]}, {"id": "shinshin-soushitsu-shinshin-koujaku", "name": "心神喪失・心神耗弱", "kind": "issue", "parents": ["keiho-sekinin-nouryoku"]}, {"id": "gen-in-ni-oite-jiyuu-na-koui", "name": "原因において自由な行為", "kind": "issue", "parents": ["keiho-sekinin-nouryoku", "keiho-jikkou-koui"], "memo": "責任能力の問題だが、実行行為をどこに見るかで説明する立場もあるので実行行為も親にした"}, {"id": "ihousei-no-ishiki", "name": "違法性の意識", "kind": "issue", "parents": ["keiho-sekinin"], "memo": "「違法性の意識の可能性」はエイリアスにしない（どちらを責任の要件とみるかが学説の対立点）"}, {"id": "kitai-kanousei", "name": "期待可能性", "kind": "issue", "parents": ["keiho-sekinin"]}, {"id": "jikkou-no-chakushu", "name": "実行の着手", "kind": "issue", "parents": ["keiho-misui", "keiho-jikkou-koui"]}, {"id": "funou-han", "name": "不能犯", "kind": "issue", "parents": ["keiho-misui"]}, {"id": "gutaiteki-kiken-setsu", "name": "具体的危険説", "kind": "issue", "parents": ["funou-han"]}, {"id": "kyakkanteki-kiken-setsu", "name": "客観的危険説", "kind": "issue", "parents": ["funou-han"]}, {"id": "chuushi-han", "name": "中止犯", "kind": "issue", "parents": ["keiho-misui"], "aliases": ["中止未遂"]}, {"id": "chuushi-no-nin-isei", "name": "中止の任意性", "kind": "issue", "parents": ["chuushi-han"]}, {"id": "kyoubou-kyoudou-seihan", "name": "共謀共同正犯", "kind": "issue", "parents": ["keiho-kyoudou-seihan"]}, {"id": "shoukeiteki-kyouhan", "name": "承継的共犯", "kind": "issue", "parents": ["keiho-kyouhan"]}, {"id": "kyouhan-kankei-kara-no-ridatsu", "name": "共犯関係からの離脱", "kind": "issue", "parents": ["keiho-kyouhan"], "aliases": ["共犯からの離脱"]}, {"id": "kyouhan-to-mibun", "name": "共犯と身分", "kind": "issue", "parents": ["keiho-kyouhan"]}, {"id": "kyouhan-no-sakugo", "name": "共犯の錯誤", "kind": "issue", "parents": ["keiho-kyouhan", "keiho-sakugo"]}, {"id": "kyouhan-no-juuzokusei", "name": "共犯の従属性", "kind": "issue", "parents": ["keiho-kyougi-no-kyouhan"]}, {"id": "fusakui-ni-yoru-kyouhan", "name": "不作為による共犯", "kind": "issue", "parents": ["keiho-kyouhan"], "related": ["fusakui-han"]}, {"id": "houkatsu-ichizai", "name": "包括一罪", "kind": "issue", "parents": ["keiho-zaisuu"]}, {"id": "kakei-jou-ichizai", "name": "科刑上一罪", "kind": "issue", "parents": ["keiho-zaisuu"]}, {"id": "shikkou-yuuyo", "name": "刑の執行猶予", "kind": "issue", "parents": ["keiho-keibatsu"], "aliases": ["執行猶予"]}, {"id": "koukinkei", "name": "拘禁刑", "kind": "issue", "parents": ["keiho-keibatsu"], "memo": "2025年6月から懲役と禁錮が拘禁刑にまとめられた。「懲役」「禁錮」はエイリアスにしない（中身が違う、古い制度のため）。古い過去問のタグをどうするかは人が確認"}, {"id": "hito-no-shiki", "name": "人の始期", "kind": "issue", "parents": ["keiho-seimei-shintai"]}, {"id": "shougai-no-igi", "name": "傷害の意義", "kind": "issue", "parents": ["keiho-seimei-shintai"]}, {"id": "douji-shougai-no-tokurei", "name": "同時傷害の特例", "kind": "issue", "parents": ["keiho-seimei-shintai", "keiho-kyouhan"], "memo": "207条。傷害罪の規定だが、共犯の成立範囲と一緒に問われることが多い"}, {"id": "hogo-sekinin-sha-iki", "name": "保護責任者遺棄罪の「保護責任」", "kind": "issue", "parents": ["keiho-seimei-shintai"], "related": ["fushinsei-fusakui-han-no-sakui-gimu"]}, {"id": "kankin-zai-no-hogo-houeki", "name": "監禁罪の保護法益", "kind": "issue", "parents": ["keiho-jiyuu"]}, {"id": "juukyo-shinnyuu-zai-no-hogo-houeki", "name": "住居侵入罪の保護法益", "kind": "issue", "parents": ["keiho-juukyo-shinnyuu"]}, {"id": "juukyoken-setsu", "name": "住居権説", "kind": "issue", "parents": ["juukyo-shinnyuu-zai-no-hogo-houeki"]}, {"id": "heion-setsu", "name": "平穏説", "kind": "issue", "parents": ["juukyo-shinnyuu-zai-no-hogo-houeki"]}, {"id": "shinjitsusei-no-shoumei", "name": "名誉毀損罪における真実性の証明", "kind": "issue", "parents": ["keiho-meiyo"], "related": ["kenpo-hyougen-no-jiyuu"], "memo": "230条の2。表現の自由との調整の規定なので、憲法の表現の自由と関連でつないだ"}, {"id": "gyoumu-to-koumu", "name": "業務妨害罪における公務", "kind": "issue", "parents": ["keiho-shinyou-gyoumu", "keiho-koumu-bougai"], "memo": "公務が「業務」に含まれるかの問題で、業務妨害罪と公務執行妨害罪の両方から問われる"}, {"id": "zaisan-han-no-hogo-houeki", "name": "財産犯の保護法益", "kind": "issue", "parents": ["keiho-zaisan"], "memo": "学説は子の論点として立てた。窃盗罪で問われることが多いが、財産犯全体の問題として財産に対する罪の下に置いた"}, {"id": "honken-setsu", "name": "本権説", "kind": "issue", "parents": ["zaisan-han-no-hogo-houeki"]}, {"id": "senyuu-setsu", "name": "占有説", "kind": "issue", "parents": ["zaisan-han-no-hogo-houeki"]}, {"id": "chuukan-setsu-zaisan-han", "name": "中間説（財産犯の保護法益）", "kind": "issue", "parents": ["zaisan-han-no-hogo-houeki"]}, {"id": "keihou-jou-no-senyuu", "name": "刑法上の占有", "kind": "issue", "parents": ["keiho-zaisan"], "memo": "民法の占有（占有権）とは意味が違う。民法を作るときに関連でつなぐ"}, {"id": "shisha-no-senyuu", "name": "死者の占有", "kind": "issue", "parents": ["keihou-jou-no-senyuu"]}, {"id": "fuhou-ryoutoku-no-ishi", "name": "不法領得の意思", "kind": "issue", "parents": ["keiho-zaisan"]}, {"id": "shinzoku-soutou-rei", "name": "親族相盗例", "kind": "issue", "parents": ["keiho-zaisan"], "aliases": ["親族間の犯罪に関する特例"], "memo": "244条。窃盗罪の規定だが、詐欺・恐喝・横領にも準用されるので財産に対する罪の下に置いた"}, {"id": "settou-to-sagi-no-kubetsu", "name": "窃盗罪と詐欺罪の区別", "kind": "issue", "parents": ["keiho-settou", "keiho-sagi"]}, {"id": "goutou-no-bouko-kyouhaku", "name": "強盗罪の暴行・脅迫", "kind": "issue", "parents": ["keiho-goutou"]}, {"id": "jigo-goutou", "name": "事後強盗罪", "kind": "issue", "parents": ["keiho-goutou"]}, {"id": "jigo-goutou-to-kyouhan", "name": "事後強盗罪と共犯", "kind": "issue", "parents": ["keiho-goutou", "keiho-kyouhan"], "related": ["kyouhan-to-mibun"]}, {"id": "goutou-chishishou", "name": "強盗致死傷罪", "kind": "issue", "parents": ["keiho-goutou"]}, {"id": "goutou-no-kikai", "name": "強盗の機会", "kind": "issue", "parents": ["goutou-chishishou"]}, {"id": "gimou-koui", "name": "欺罔行為", "kind": "issue", "parents": ["keiho-sagi"], "aliases": ["欺く行為"], "memo": "条文は「人を欺いて」。「欺く行為」は条文に寄せた言い方で、指すものは同じとみた"}, {"id": "shobun-koui", "name": "処分行為", "kind": "issue", "parents": ["keiho-sagi"]}, {"id": "sankaku-sagi", "name": "三角詐欺", "kind": "issue", "parents": ["shobun-koui"]}, {"id": "denshi-keisanki-shiyou-sagi", "name": "電子計算機使用詐欺罪", "kind": "issue", "parents": ["keiho-sagi"]}, {"id": "itaku-shinnin-kankei", "name": "委託信任関係", "kind": "issue", "parents": ["keiho-ouryou"]}, {"id": "ouryou-go-no-ouryou", "name": "横領後の横領", "kind": "issue", "parents": ["keiho-ouryou"]}, {"id": "fuhou-gen-in-kyuufu-to-ouryou", "name": "不法原因給付と横領罪", "kind": "issue", "parents": ["keiho-ouryou"], "memo": "民法708条（不法原因給付）と関連でつなぐ予定"}, {"id": "ouryou-to-hainin-no-kubetsu", "name": "横領罪と背任罪の区別", "kind": "issue", "parents": ["keiho-ouryou", "keiho-hainin"]}, {"id": "hainin-zai-no-honshitsu", "name": "背任罪の本質", "kind": "issue", "parents": ["keiho-hainin"]}, {"id": "kengen-ranyou-setsu", "name": "権限濫用説", "kind": "issue", "parents": ["hainin-zai-no-honshitsu"]}, {"id": "haishin-setsu", "name": "背信説", "kind": "issue", "parents": ["hainin-zai-no-honshitsu"]}, {"id": "touhin-zai-no-honshitsu", "name": "盗品等関与罪の本質", "kind": "issue", "parents": ["keiho-touhin"]}, {"id": "shouson-no-igi", "name": "焼損の意義", "kind": "issue", "parents": ["keiho-houka"]}, {"id": "genjuusei", "name": "現住性", "kind": "issue", "parents": ["keiho-houka"]}, {"id": "yuukei-gizou-to-mukei-gizou", "name": "有形偽造と無形偽造", "kind": "issue", "parents": ["keiho-bunsho-gizou"]}, {"id": "meigi-nin-no-shoudaku", "name": "名義人の承諾", "kind": "issue", "parents": ["yuukei-gizou-to-mukei-gizou"]}, {"id": "waisetsu-no-gainen", "name": "わいせつの概念", "kind": "issue", "parents": ["keiho-fuuzoku"], "related": ["kenpo-hyougen-no-jiyuu"]}, {"id": "shokumu-no-tekihousei", "name": "職務の適法性", "kind": "issue", "parents": ["keiho-koumu-bougai"]}, {"id": "hannin-jishin-no-kyousa", "name": "犯人自身による犯人蔵匿・証拠隠滅の教唆", "kind": "issue", "parents": ["keiho-shihou-sayou", "keiho-kyousa-han"]}, {"id": "wairo-zai-no-shokumu-kanrensei", "name": "賄賂罪の職務関連性", "kind": "issue", "parents": ["keiho-oshoku"]}];
+// REF: ほかの科目のテーマ。関連の名前を出すためだけに使い、樹形図には出さない
+const REF = [{"id": "kenpo", "name": "憲法", "related": [], "_from": "憲法"}, {"id": "kenpo-souron", "name": "憲法総論", "related": [], "_from": "憲法"}, {"id": "kenpo-kokumin-shuken", "name": "国民主権", "related": [], "_from": "憲法"}, {"id": "kenpo-heiwa-shugi", "name": "平和主義", "related": [], "_from": "憲法"}, {"id": "kenpo-tennou", "name": "天皇", "related": [], "_from": "憲法"}, {"id": "kenpo-jinken", "name": "人権", "related": [], "_from": "憲法"}, {"id": "kenpo-jinken-souron", "name": "人権総論", "related": [], "_from": "憲法"}, {"id": "kenpo-jinken-kakuron", "name": "人権各論", "related": [], "_from": "憲法"}, {"id": "kenpo-houkatsuteki-kihonken", "name": "包括的基本権", "related": [], "_from": "憲法"}, {"id": "kenpo-hou-no-moto-no-byoudou", "name": "法の下の平等", "related": [], "_from": "憲法"}, {"id": "kenpo-jiyuuken", "name": "自由権", "related": [], "_from": "憲法"}, {"id": "kenpo-seishinteki-jiyuu", "name": "精神的自由", "related": [], "_from": "憲法"}, {"id": "kenpo-shisou-ryoushin-no-jiyuu", "name": "思想・良心の自由", "related": [], "_from": "憲法"}, {"id": "kenpo-shinkyou-no-jiyuu", "name": "信教の自由", "related": [], "_from": "憲法"}, {"id": "kenpo-seikyou-bunri", "name": "政教分離", "related": [], "_from": "憲法"}, {"id": "kenpo-hyougen-no-jiyuu", "name": "表現の自由", "related": [], "_from": "憲法"}, {"id": "kenpo-shuukai-kessha-no-jiyuu", "name": "集会・結社の自由", "related": [], "_from": "憲法"}, {"id": "kenpo-gakumon-no-jiyuu", "name": "学問の自由", "related": [], "_from": "憲法"}, {"id": "kenpo-keizaiteki-jiyuu", "name": "経済的自由", "related": [], "_from": "憲法"}, {"id": "kenpo-shokugyou-sentaku-no-jiyuu", "name": "職業選択の自由", "related": [], "_from": "憲法"}, {"id": "kenpo-kyojuu-iten-no-jiyuu", "name": "居住・移転の自由", "related": [], "_from": "憲法"}, {"id": "kenpo-zaisanken", "name": "財産権", "related": [], "_from": "憲法"}, {"id": "kenpo-jinshin-no-jiyuu", "name": "人身の自由", "related": [], "_from": "憲法"}, {"id": "kenpo-tekisei-tetsuzuki", "name": "適正手続", "related": [], "_from": "憲法"}, {"id": "kenpo-higisha-hikokunin-no-kenri", "name": "被疑者・被告人の権利", "related": [], "_from": "憲法"}, {"id": "kenpo-sanseiken", "name": "参政権", "related": [], "_from": "憲法"}, {"id": "kenpo-kokumu-seikyuuken", "name": "国務請求権", "related": [], "_from": "憲法"}, {"id": "kenpo-shakaiken", "name": "社会権", "related": [], "_from": "憲法"}, {"id": "kenpo-seizonken", "name": "生存権", "related": [], "_from": "憲法"}, {"id": "kenpo-kyouiku-wo-ukeru-kenri", "name": "教育を受ける権利", "related": [], "_from": "憲法"}, {"id": "kenpo-roudou-kihonken", "name": "労働基本権", "related": [], "_from": "憲法"}, {"id": "kenpo-tochi", "name": "統治", "related": [], "_from": "憲法"}, {"id": "kenpo-kenryoku-bunritsu", "name": "権力分立", "related": [], "_from": "憲法"}, {"id": "kenpo-kokkai", "name": "国会", "related": [], "_from": "憲法"}, {"id": "kenpo-naikaku", "name": "内閣", "related": [], "_from": "憲法"}, {"id": "kenpo-shihou", "name": "司法", "related": [], "_from": "憲法"}, {"id": "kenpo-zaisei", "name": "財政", "related": [], "_from": "憲法"}, {"id": "chihou-jichi", "name": "地方自治", "related": [], "_from": "憲法"}, {"id": "kenpo-kenpou-hoshou", "name": "憲法保障", "related": [], "_from": "憲法"}, {"id": "kenpo-kenpou-soshou", "name": "憲法訴訟", "related": [], "_from": "憲法"}, {"id": "kenpo-kenpou-kaisei", "name": "憲法改正", "related": [], "_from": "憲法"}, {"id": "jinken-kyouyuu-shutaisei", "name": "人権の享有主体性", "related": [], "_from": "憲法"}, {"id": "gaikokujin-no-jinken", "name": "外国人の人権", "related": [], "_from": "憲法"}, {"id": "gaikokujin-no-senkyoken", "name": "外国人の選挙権", "related": ["kenpo-sanseiken"], "_from": "憲法"}, {"id": "gaikokujin-no-seiji-katsudou-no-jiyuu", "name": "外国人の政治活動の自由", "related": [], "_from": "憲法"}, {"id": "houjin-no-jinken", "name": "法人の人権", "related": [], "_from": "憲法"}, {"id": "jinken-no-shijinkan-kouryoku", "name": "人権の私人間効力", "related": [], "_from": "憲法"}, {"id": "shijinkan-kouryoku-mukouryoku-setsu", "name": "無効力説（私人間効力）", "related": [], "_from": "憲法"}, {"id": "shijinkan-kouryoku-chokusetsu-tekiyou-setsu", "name": "直接適用説（私人間効力）", "related": [], "_from": "憲法"}, {"id": "shijinkan-kouryoku-kansetsu-tekiyou-setsu", "name": "間接適用説（私人間効力）", "related": [], "_from": "憲法"}, {"id": "koukyou-no-fukushi", "name": "公共の福祉", "related": [], "_from": "憲法"}, {"id": "ichigenteki-gaizai-seiyaku-setsu", "name": "一元的外在制約説", "related": [], "_from": "憲法"}, {"id": "naizai-gaizai-nigenteki-seiyaku-setsu", "name": "内在・外在二元的制約説", "related": [], "_from": "憲法"}, {"id": "ichigenteki-naizai-seiyaku-setsu", "name": "一元的内在制約説", "related": [], "_from": "憲法"}, {"id": "tokubetsu-na-houritsu-kankei-ni-okeru-jinken", "name": "特別な法律関係における人権", "related": [], "_from": "憲法"}, {"id": "tokubetsu-kenryoku-kankei-ron", "name": "特別権力関係論", "related": [], "_from": "憲法"}, {"id": "koumuin-no-jinken", "name": "公務員の人権", "related": [], "_from": "憲法"}, {"id": "hishuuyousha-no-jinken", "name": "刑事収容施設被収容者の人権", "related": [], "_from": "憲法"}, {"id": "seidoteki-hoshou", "name": "制度的保障", "related": ["daigaku-no-jichi"], "_from": "憲法"}, {"id": "koufuku-tsuikyuuken", "name": "幸福追求権", "related": [], "_from": "憲法"}, {"id": "puraibashii-ken", "name": "プライバシー権", "related": [], "_from": "憲法"}, {"id": "jiko-jouhou-control-ken", "name": "自己情報コントロール権", "related": [], "_from": "憲法"}, {"id": "jiko-kettei-ken", "name": "自己決定権", "related": [], "_from": "憲法"}, {"id": "byoudou-kouhan-rekkyo-jiyuu", "name": "14条1項後段列挙事由", "related": [], "_from": "憲法"}, {"id": "giin-teisuu-fukinkou", "name": "議員定数不均衡", "related": [], "_from": "憲法"}, {"id": "chinmoku-no-jiyuu", "name": "沈黙の自由", "related": [], "_from": "憲法"}, {"id": "mokuteki-kouka-kijun", "name": "目的効果基準", "related": [], "_from": "憲法"}, {"id": "shiru-kenri", "name": "知る権利", "related": [], "_from": "憲法"}, {"id": "houdou-no-jiyuu", "name": "報道の自由", "related": [], "_from": "憲法"}, {"id": "shuzai-no-jiyuu", "name": "取材の自由", "related": [], "_from": "憲法"}, {"id": "ken-etsu-no-kinshi", "name": "検閲の禁止", "related": ["jizen-yokusei-no-gensokuteki-kinshi"], "_from": "憲法"}, {"id": "jizen-yokusei-no-gensokuteki-kinshi", "name": "事前抑制の原則的禁止", "related": [], "_from": "憲法"}, {"id": "meikakusei-no-gensoku", "name": "明確性の原則", "related": [], "_from": "憲法"}, {"id": "hyougen-naiyou-kisei-to-naiyou-chuuritsu-kisei", "name": "表現内容規制と表現内容中立規制", "related": [], "_from": "憲法"}, {"id": "daigaku-no-jichi", "name": "大学の自治", "related": [], "_from": "憲法"}, {"id": "eigyou-no-jiyuu", "name": "営業の自由", "related": [], "_from": "憲法"}, {"id": "kisei-mokuteki-nibunron", "name": "規制目的二分論", "related": ["eigyou-no-jiyuu", "nijuu-no-kijun-ron"], "_from": "憲法"}, {"id": "kaigai-tokou-no-jiyuu", "name": "海外渡航の自由", "related": [], "_from": "憲法"}, {"id": "sonshitsu-hoshou-no-youhi", "name": "損失補償の要否", "related": [], "_from": "憲法"}, {"id": "seitou-na-hoshou-no-imi", "name": "「正当な補償」の意味", "related": [], "_from": "憲法"}, {"id": "kanzen-hoshou-setsu", "name": "完全補償説", "related": [], "_from": "憲法"}, {"id": "soutou-hoshou-setsu", "name": "相当補償説", "related": [], "_from": "憲法"}, {"id": "jourei-ni-yoru-zaisanken-kisei", "name": "条例による財産権の規制", "related": [], "_from": "憲法"}, {"id": "gyousei-tetsuzuki-to-31-jou", "name": "行政手続と31条", "related": [], "_from": "憲法"}, {"id": "kokuchi-to-choumon", "name": "告知と聴聞", "related": [], "_from": "憲法"}, {"id": "reijou-shugi", "name": "令状主義", "related": [], "_from": "憲法"}, {"id": "gyousei-chousa-to-reijou-shugi", "name": "行政調査と令状主義", "related": [], "_from": "憲法"}, {"id": "jiko-fusai-kyohi-tokken", "name": "自己負罪拒否特権", "related": [], "_from": "憲法"}, {"id": "ichiji-fusairi", "name": "一事不再理", "related": ["nijuu-no-kiken"], "_from": "憲法"}, {"id": "nijuu-no-kiken", "name": "二重の危険", "related": [], "_from": "憲法"}, {"id": "senkyoken-no-houteki-seikaku", "name": "選挙権の法的性格", "related": [], "_from": "憲法"}, {"id": "senkyoken-kenri-ichigen-setsu", "name": "権利一元説（選挙権）", "related": [], "_from": "憲法"}, {"id": "senkyoken-nigen-setsu", "name": "二元説（選挙権）", "related": [], "_from": "憲法"}, {"id": "zaigai-kokumin-no-senkyoken", "name": "在外国民の選挙権", "related": [], "_from": "憲法"}, {"id": "kokka-baishou-seikyuuken", "name": "国家賠償請求権", "related": [], "_from": "憲法"}, {"id": "saiban-wo-ukeru-kenri", "name": "裁判を受ける権利", "related": [], "_from": "憲法"}, {"id": "seizonken-no-houteki-seikaku", "name": "生存権の法的性格", "related": [], "_from": "憲法"}, {"id": "program-kitei-setsu", "name": "プログラム規定説", "related": [], "_from": "憲法"}, {"id": "chuushouteki-kenri-setsu", "name": "抽象的権利説", "related": [], "_from": "憲法"}, {"id": "gutaiteki-kenri-setsu", "name": "具体的権利説", "related": [], "_from": "憲法"}, {"id": "kyouikuken-no-shozai", "name": "教育権の所在", "related": [], "_from": "憲法"}, {"id": "koumuin-no-roudou-kihonken", "name": "公務員の労働基本権", "related": ["koumuin-no-jinken"], "_from": "憲法"}, {"id": "kokumin-shuken-no-imi", "name": "国民主権の意味", "related": [], "_from": "憲法"}, {"id": "senryoku-no-imi", "name": "「戦力」の意味", "related": [], "_from": "憲法"}, {"id": "jieiken", "name": "自衛権", "related": [], "_from": "憲法"}, {"id": "tennou-no-kokuji-koui", "name": "天皇の国事行為", "related": [], "_from": "憲法"}, {"id": "yuiitsu-no-rippou-kikan", "name": "唯一の立法機関", "related": [], "_from": "憲法"}, {"id": "kokkai-chuushin-rippou-no-gensoku", "name": "国会中心立法の原則", "related": [], "_from": "憲法"}, {"id": "kokkai-tandoku-rippou-no-gensoku", "name": "国会単独立法の原則", "related": [], "_from": "憲法"}, {"id": "inin-rippou", "name": "委任立法", "related": [], "_from": "憲法"}, {"id": "kokusei-chousaken", "name": "国政調査権", "related": [], "_from": "憲法"}, {"id": "giin-no-tokken", "name": "国会議員の特権", "related": [], "_from": "憲法"}, {"id": "menseki-tokken", "name": "免責特権", "related": [], "_from": "憲法"}, {"id": "futaiho-tokken", "name": "不逮捕特権", "related": [], "_from": "憲法"}, {"id": "shuugiin-no-yuuetsu", "name": "衆議院の優越", "related": [], "_from": "憲法"}, {"id": "gyouseiken-no-imi", "name": "行政権の意味", "related": [], "_from": "憲法"}, {"id": "koujo-setsu", "name": "控除説", "related": [], "_from": "憲法"}, {"id": "giin-naikakusei", "name": "議院内閣制", "related": [], "_from": "憲法"}, {"id": "shuugiin-no-kaisan", "name": "衆議院の解散", "related": [], "_from": "憲法"}, {"id": "dokuritsu-gyousei-iinkai", "name": "独立行政委員会", "related": [], "_from": "憲法"}, {"id": "shihouken-no-imi", "name": "司法権の意味", "related": [], "_from": "憲法"}, {"id": "houritsujou-no-soushou", "name": "法律上の争訟", "related": [], "_from": "憲法"}, {"id": "shihouken-no-genkai", "name": "司法権の限界", "related": [], "_from": "憲法"}, {"id": "touchi-koui", "name": "統治行為", "related": [], "_from": "憲法"}, {"id": "bubun-shakai-no-houri", "name": "部分社会の法理", "related": [], "_from": "憲法"}, {"id": "shihouken-no-dokuritsu", "name": "司法権の独立", "related": [], "_from": "憲法"}, {"id": "saiban-no-koukai", "name": "裁判の公開", "related": [], "_from": "憲法"}, {"id": "iken-shinsasei-no-seikaku", "name": "違憲審査制の性格", "related": [], "_from": "憲法"}, {"id": "fuzuiteki-shinsasei", "name": "付随的審査制", "related": [], "_from": "憲法"}, {"id": "iken-hanketsu-no-kouryoku", "name": "違憲判決の効力", "related": [], "_from": "憲法"}, {"id": "nijuu-no-kijun-ron", "name": "二重の基準論", "related": [], "_from": "憲法"}, {"id": "goken-gentei-kaishaku", "name": "合憲限定解釈", "related": [], "_from": "憲法"}, {"id": "rippou-fusakui", "name": "立法不作為の違憲性", "related": ["kokka-baishou-seikyuuken"], "_from": "憲法"}, {"id": "sozei-houritsu-shugi", "name": "租税法律主義", "related": [], "_from": "憲法"}, {"id": "koukin-shishutsu-no-seigen", "name": "公金支出の制限", "related": ["kenpo-seikyou-bunri"], "_from": "憲法"}, {"id": "yosan-no-houteki-seikaku", "name": "予算の法的性格", "related": [], "_from": "憲法"}, {"id": "chihou-jichi-no-honshi", "name": "地方自治の本旨", "related": [], "_from": "憲法"}, {"id": "jourei-seiteiken-no-han-i", "name": "条例制定権の範囲", "related": [], "_from": "憲法"}, {"id": "kenpou-kaisei-no-genkai", "name": "憲法改正の限界", "related": [], "_from": "憲法"}];
+const byId = Object.fromEntries([...REF, ...DATA].map(t => [t.id, t]));
+const children = {};
+DATA.forEach(t => (t.parents || []).forEach(p => (children[p] ||= []).push(t.id)));
+const relatedOf = id => {
+  const s = new Set(byId[id].related || []);
+  [...DATA, ...REF].forEach(t => (t.related || []).includes(id) && s.add(t.id));
+  return [...s];
+};
+const issueLevel = id => {
+  const t = byId[id];
+  if (t.kind !== 'issue') return 0;
+  const p = (t.parents || [])[0];
+  return p && byId[p]?.kind === 'issue' ? issueLevel(p) + 1 : 1;
+};
+let selected = null;
+let query = '';
+
+const nS = DATA.filter(t => t.kind === 'structure').length;
+document.getElementById('stats').textContent =
+  `テーマ ${DATA.length} 件（構造 ${nS}・論点 ${DATA.length - nS}）／複数の親 ${DATA.filter(t => (t.parents || []).length > 1).length} 件`;
+
+const matches = t => !query || [t.name, t.id, ...(t.aliases || [])].some(s => s.toLowerCase().includes(query));
+const memo = {};
+const subtreeHit = id => {
+  if (id in memo) return memo[id];
+  memo[id] = false;
+  return (memo[id] = matches(byId[id]) || (children[id] || []).some(subtreeHit));
+};
+
+function rowHTML(t) {
+  const lvl = issueLevel(t.id);
+  const kind = t.kind === 'structure' ? 's' : 'i';
+  const np = (t.parents || []).length;
+  return `<span class="name ${kind}${t.id === selected ? ' selected' : ''}${query && matches(t) ? ' hit' : ''}" data-id="${t.id}" tabindex="0">${t.name}</span>`
+    + (lvl ? `<span class="chip i">論点${lvl}</span>` : '')
+    + (np > 1 ? `<span class="chip poly" title="親：${t.parents.map(p => byId[p]?.name).join('・')}">親${np}</span>` : '');
+}
+
+function nodeHTML(id) {
+  if (query && !subtreeHit(id)) return '';
+  const t = byId[id];
+  const kids = (children[id] || []).map(nodeHTML).join('');
+  if (!kids) return `<li><div class="row"><span class="caret"></span>${rowHTML(t)}</div></li>`;
+  return `<li><details open data-kind="${t.kind}"><summary><div class="row"><span class="caret">▶</span>${rowHTML(t)}</div></summary><ul>${kids}</ul></details></li>`;
+}
+
+function renderTree() {
+  for (const k in memo) delete memo[k];
+  const html = DATA.filter(t => !(t.parents || []).length).map(t => nodeHTML(t.id)).join('');
+  document.getElementById('tree').innerHTML = html ? `<ul>${html}</ul>` : '<p class="empty">見つかりません</p>';
+}
+
+const linkList = ids => ids.length
+  ? ids.map(i => byId[i]?._from
+      ? `<span class="tag">${byId[i].name}（${byId[i]._from}）</span>`
+      : `<button class="link" type="button" data-go="${i}">${byId[i]?.name ?? i}</button>`).join('')
+  : '<span class="none">なし</span>';
+
+function renderDetail() {
+  const el = document.getElementById('detail');
+  if (!selected) { el.innerHTML = '<p class="none">樹形図のテーマを選ぶと、親・子・エイリアス・関連・メモを表示します。</p>'; return; }
+  const t = byId[selected];
+  const lvl = issueLevel(t.id);
+  el.innerHTML = `
+    <h2>${t.name}</h2>
+    <div class="id">${t.id}</div>
+    <dl>
+      <div><dt>種類</dt><dd>${t.kind === 'structure' ? '構造エリア' : `論点エリア（第${lvl}段）`}</dd></div>
+      <div><dt>親</dt><dd>${linkList(t.parents || [])}</dd></div>
+      <div><dt>子</dt><dd>${linkList(children[t.id] || [])}</dd></div>
+      <div><dt>エイリアス</dt><dd>${(t.aliases || []).length ? t.aliases.map(a => `<span class="tag">${a}</span>`).join('') : '<span class="none">なし</span>'}</dd></div>
+      <div><dt>関連</dt><dd>${linkList(relatedOf(t.id))}</dd></div>
+      <div><dt>メモ</dt><dd class="memo">${t.memo || '<span class="none">なし</span>'}</dd></div>
+    </dl>`;
+}
+
+function select(id, scroll) {
+  selected = id;
+  renderTree();
+  renderDetail();
+  if (scroll) {
+    const el = document.querySelector(`#tree .name[data-id="${id}"]`);
+    el?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }
+}
+
+document.getElementById('tree').addEventListener('click', e => {
+  const n = e.target.closest('.name');
+  if (n) { e.preventDefault(); select(n.dataset.id); }
+});
+document.getElementById('tree').addEventListener('keydown', e => {
+  const n = e.target.closest('.name');
+  if (n && e.key === 'Enter') { e.preventDefault(); select(n.dataset.id); }
+});
+document.getElementById('detail').addEventListener('click', e => {
+  const g = e.target.closest('[data-go]');
+  if (g && byId[g.dataset.go] && !byId[g.dataset.go]._from) {
+    if (query) { query = ''; document.getElementById('q').value = ''; }
+    select(g.dataset.go, true);
+  }
+});
+document.getElementById('q').addEventListener('input', e => { query = e.target.value.trim().toLowerCase(); renderTree(); });
+document.getElementById('open-all').addEventListener('click', () => document.querySelectorAll('#tree details').forEach(d => d.open = true));
+document.getElementById('close-issues').addEventListener('click', () => document.querySelectorAll('#tree details[data-kind="issue"]').forEach(d => d.open = false));
+
+renderTree();
+renderDetail();
+</script>

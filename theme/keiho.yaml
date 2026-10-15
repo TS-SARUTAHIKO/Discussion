@@ -1,0 +1,900 @@
+# 刑法 テーマ体系 素案 v0.1
+#
+# 規則は「テーマ体系の作り方（素案づくり用の手引き）」に従う。書き方は kenpo.yaml と同じ。
+# - kind: structure（構造エリア）／ issue（論点エリア）
+# - 構造エリアと論点の第1段は親を複数持てる。論点の第2・3段は親（論点）を1つだけ持つ
+# - 論点エリアは最大3段
+# - 書いていない項目（aliases / related / memo）は空とみなす
+# - related は向きを持たないので、片側にだけ書く。憲法のテーマとの関連もこちら側に書いた
+# - 構造エリアの ID は科目の接頭辞（keiho-）を付ける。論点の ID は接頭辞なし
+# 迷った点・決めきれなかった点は keiho_memo.md にまとめている。
+
+# ============================================================
+# 構造エリア（structure）
+# ============================================================
+
+- id: keiho
+  name: 刑法
+  kind: structure
+  parents: []
+  aliases: []
+  related: []
+  memo: ""
+
+# ---- 刑法総論 ----
+
+- id: keiho-souron
+  name: 刑法総論
+  kind: structure
+  parents: [keiho]
+
+- id: keiho-kiso
+  name: 刑法の基礎
+  kind: structure
+  parents: [keiho-souron]
+  memo: 刑法の機能・罪刑法定主義・適用範囲など、犯罪論に入る前の部分の枠
+
+- id: keiho-zaikei-houtei-shugi
+  name: 罪刑法定主義
+  kind: structure
+  parents: [keiho-kiso]
+
+- id: keiho-tekiyou-han-i
+  name: 刑法の適用範囲
+  kind: structure
+  parents: [keiho-kiso]
+
+# 構成要件
+
+- id: keiho-kousei-youken
+  name: 構成要件
+  kind: structure
+  parents: [keiho-souron]
+  memo: 「構成要件該当性」はエイリアスにしない（構成要件という枠と、それに当たるかという判断は別の意味）
+
+- id: keiho-jikkou-koui
+  name: 実行行為
+  kind: structure
+  parents: [keiho-kousei-youken]
+
+- id: keiho-inga-kankei
+  name: 因果関係（刑法）
+  kind: structure
+  parents: [keiho-kousei-youken]
+  memo: 民法（不法行為）にも「因果関係」があり意味が違うので、科目名を添えた
+
+- id: keiho-koi
+  name: 故意（刑法）
+  kind: structure
+  parents: [keiho-kousei-youken, keiho-sekinin]
+  memo: 故意を構成要件の要素とみるか、責任の要素とみるかで体系上の位置が分かれる。両方を親にした。民法の故意と区別するため科目名を添えた
+
+- id: keiho-sakugo
+  name: 錯誤（刑法）
+  kind: structure
+  parents: [keiho-koi]
+  memo: 民法の錯誤（95条）と区別するため科目名を添えた
+
+- id: keiho-kashitsu
+  name: 過失（刑法）
+  kind: structure
+  parents: [keiho-kousei-youken, keiho-sekinin]
+  memo: 故意と同じく、体系上の位置が学説で分かれるので両方を親にした
+
+# 違法性
+
+- id: keiho-ihousei
+  name: 違法性（刑法）
+  kind: structure
+  parents: [keiho-souron]
+  memo: 民法（不法行為）の違法性と区別するため科目名を添えた
+
+- id: keiho-ihousei-sokyaku-jiyuu
+  name: 違法性阻却事由
+  kind: structure
+  parents: [keiho-ihousei]
+
+- id: keiho-seitou-koui
+  name: 正当行為
+  kind: structure
+  parents: [keiho-ihousei-sokyaku-jiyuu]
+  memo: 35条（法令行為・正当業務行為）
+
+- id: keiho-seitou-boui
+  name: 正当防衛
+  kind: structure
+  parents: [keiho-ihousei-sokyaku-jiyuu]
+  memo: 民法720条にも正当防衛があるが、刑法での使い方が中心なので名前に科目を添えていない（メモ参照）
+
+- id: keiho-kinkyuu-hinan
+  name: 緊急避難
+  kind: structure
+  parents: [keiho-ihousei-sokyaku-jiyuu]
+  memo: 正当防衛と同じく、民法側を作るときに「緊急避難（民法）」を立てる想定
+
+# 責任
+
+- id: keiho-sekinin
+  name: 責任（刑法）
+  kind: structure
+  parents: [keiho-souron]
+  memo: 民法の「責任」（債務と責任など）と意味が違うので科目名を添えた
+
+- id: keiho-sekinin-nouryoku
+  name: 責任能力
+  kind: structure
+  parents: [keiho-sekinin]
+
+# 未遂・共犯・罪数・刑罰
+
+- id: keiho-misui
+  name: 未遂犯
+  kind: structure
+  parents: [keiho-souron]
+  aliases: [未遂]
+
+- id: keiho-kyouhan
+  name: 共犯
+  kind: structure
+  parents: [keiho-souron]
+  memo: 共同正犯を含む広い意味の共犯（広義の共犯）の枠
+
+- id: keiho-kyoudou-seihan
+  name: 共同正犯
+  kind: structure
+  parents: [keiho-kyouhan]
+
+- id: keiho-kyougi-no-kyouhan
+  name: 狭義の共犯
+  kind: structure
+  parents: [keiho-kyouhan]
+  memo: 教唆犯と幇助犯をまとめる枠
+
+- id: keiho-kyousa-han
+  name: 教唆犯
+  kind: structure
+  parents: [keiho-kyougi-no-kyouhan]
+
+- id: keiho-houjo-han
+  name: 幇助犯
+  kind: structure
+  parents: [keiho-kyougi-no-kyouhan]
+  aliases: [従犯]
+  memo: 62条の条文上の呼び名は「従犯」。指すものは同じとみてエイリアスにした
+
+- id: keiho-zaisuu
+  name: 罪数
+  kind: structure
+  parents: [keiho-souron]
+
+- id: keiho-keibatsu
+  name: 刑罰
+  kind: structure
+  parents: [keiho-souron]
+  memo: 刑の種類・執行猶予・量刑など
+
+# ---- 刑法各論 ----
+
+- id: keiho-kakuron
+  name: 刑法各論
+  kind: structure
+  parents: [keiho]
+
+- id: keiho-kojinteki-houeki
+  name: 個人的法益に対する罪
+  kind: structure
+  parents: [keiho-kakuron]
+
+- id: keiho-seimei-shintai
+  name: 生命・身体に対する罪
+  kind: structure
+  parents: [keiho-kojinteki-houeki]
+
+- id: keiho-jiyuu
+  name: 自由に対する罪
+  kind: structure
+  parents: [keiho-kojinteki-houeki]
+  memo: 逮捕・監禁、脅迫・強要、略取・誘拐など
+
+- id: keiho-seiteki-jiyuu
+  name: 性的自由に対する罪
+  kind: structure
+  parents: [keiho-jiyuu]
+  memo: 2023年改正で不同意性交等罪などに変わった。枠の名前をどうするかは人が確認（メモ参照）
+
+- id: keiho-juukyo-shinnyuu
+  name: 住居を侵す罪
+  kind: structure
+  parents: [keiho-kojinteki-houeki]
+  memo: 自由に対する罪の一つとして扱う本もある。保護法益の争いがあるので、独立させて個人的法益の直下に置いた
+
+- id: keiho-meiyo
+  name: 名誉に対する罪
+  kind: structure
+  parents: [keiho-kojinteki-houeki]
+
+- id: keiho-shinyou-gyoumu
+  name: 信用・業務に対する罪
+  kind: structure
+  parents: [keiho-kojinteki-houeki]
+
+- id: keiho-zaisan
+  name: 財産に対する罪
+  kind: structure
+  parents: [keiho-kojinteki-houeki]
+  aliases: [財産犯]
+  memo: 「財産犯」は略称とみてエイリアスにした
+
+- id: keiho-settou
+  name: 窃盗罪
+  kind: structure
+  parents: [keiho-zaisan]
+
+- id: keiho-goutou
+  name: 強盗罪
+  kind: structure
+  parents: [keiho-zaisan]
+
+- id: keiho-sagi
+  name: 詐欺罪
+  kind: structure
+  parents: [keiho-zaisan]
+
+- id: keiho-kyoukatsu
+  name: 恐喝罪
+  kind: structure
+  parents: [keiho-zaisan]
+
+- id: keiho-ouryou
+  name: 横領罪
+  kind: structure
+  parents: [keiho-zaisan]
+
+- id: keiho-hainin
+  name: 背任罪
+  kind: structure
+  parents: [keiho-zaisan]
+
+- id: keiho-touhin
+  name: 盗品等に関する罪
+  kind: structure
+  parents: [keiho-zaisan]
+
+- id: keiho-kiki-intoku
+  name: 毀棄・隠匿の罪
+  kind: structure
+  parents: [keiho-zaisan]
+
+- id: keiho-shakaiteki-houeki
+  name: 社会的法益に対する罪
+  kind: structure
+  parents: [keiho-kakuron]
+
+- id: keiho-koukyou-no-anzen
+  name: 公共の安全に対する罪
+  kind: structure
+  parents: [keiho-shakaiteki-houeki]
+
+- id: keiho-houka
+  name: 放火罪
+  kind: structure
+  parents: [keiho-koukyou-no-anzen]
+
+- id: keiho-gizou
+  name: 偽造の罪
+  kind: structure
+  parents: [keiho-shakaiteki-houeki]
+
+- id: keiho-bunsho-gizou
+  name: 文書偽造罪
+  kind: structure
+  parents: [keiho-gizou]
+
+- id: keiho-fuuzoku
+  name: 風俗に対する罪
+  kind: structure
+  parents: [keiho-shakaiteki-houeki]
+  memo: わいせつ・賭博など
+
+- id: keiho-kokkateki-houeki
+  name: 国家的法益に対する罪
+  kind: structure
+  parents: [keiho-kakuron]
+  memo: 内乱・外患など国家の存立に対する罪は、短答でほとんど問われないので今回は立てていない
+
+- id: keiho-kokka-no-sayou
+  name: 国家の作用に対する罪
+  kind: structure
+  parents: [keiho-kokkateki-houeki]
+
+- id: keiho-koumu-bougai
+  name: 公務の執行を妨害する罪
+  kind: structure
+  parents: [keiho-kokka-no-sayou]
+
+- id: keiho-shihou-sayou
+  name: 司法作用に対する罪
+  kind: structure
+  parents: [keiho-kokka-no-sayou]
+  memo: 犯人蔵匿・証拠隠滅・偽証など
+
+- id: keiho-oshoku
+  name: 汚職の罪
+  kind: structure
+  parents: [keiho-kokka-no-sayou]
+  memo: 職権濫用と賄賂
+
+# ============================================================
+# 論点エリア（issue）  ※代表例だけ。網羅していない
+# ============================================================
+
+# ---- 刑法の基礎 ----
+
+- id: ruisui-kaishaku-no-kinshi
+  name: 類推解釈の禁止
+  kind: issue
+  parents: [keiho-zaikei-houtei-shugi]
+
+- id: keibatsu-houki-no-meikakusei
+  name: 刑罰法規の明確性
+  kind: issue
+  parents: [keiho-zaikei-houtei-shugi]
+  related: [meikakusei-no-gensoku]
+  memo: 憲法の「明確性の原則」と関連でつないだ
+
+- id: sokyuu-shobatsu-no-kinshi
+  name: 遡及処罰の禁止
+  kind: issue
+  parents: [keiho-zaikei-houtei-shugi]
+  aliases: [事後法の禁止]
+  memo: 「事後法の禁止」は同じ原則の別の呼び名とみてエイリアスにした。人の確認が必要
+
+- id: kokugai-han
+  name: 国外犯
+  kind: issue
+  parents: [keiho-tekiyou-han-i]
+
+# ---- 構成要件 ----
+
+- id: fusakui-han
+  name: 不作為犯
+  kind: issue
+  parents: [keiho-jikkou-koui]
+
+- id: fushinsei-fusakui-han-no-sakui-gimu
+  name: 不真正不作為犯の作為義務
+  kind: issue
+  parents: [fusakui-han]
+
+- id: kansetsu-seihan
+  name: 間接正犯
+  kind: issue
+  parents: [keiho-jikkou-koui, keiho-kyouhan]
+  memo: 実行行為（正犯性）の問題であり、共犯との区別の問題でもある
+
+- id: inga-kankei-no-handan-kijun
+  name: 因果関係の判断基準
+  kind: issue
+  parents: [keiho-inga-kankei]
+
+- id: jouken-setsu
+  name: 条件説
+  kind: issue
+  parents: [inga-kankei-no-handan-kijun]
+
+- id: soutou-inga-kankei-setsu
+  name: 相当因果関係説
+  kind: issue
+  parents: [inga-kankei-no-handan-kijun]
+
+- id: kiken-no-genjitsuka
+  name: 危険の現実化
+  kind: issue
+  parents: [inga-kankei-no-handan-kijun]
+  memo: 近年の判例の判断の枠組み。学説の名前ではないが、判断基準の一つとして説と並べた
+
+- id: kainyuu-jijou
+  name: 介在事情と因果関係
+  kind: issue
+  parents: [keiho-inga-kankei]
+
+- id: mihitsu-no-koi
+  name: 未必の故意
+  kind: issue
+  parents: [keiho-koi]
+
+- id: gutaiteki-jijitsu-no-sakugo
+  name: 具体的事実の錯誤
+  kind: issue
+  parents: [keiho-sakugo]
+
+- id: kyakutai-no-sakugo
+  name: 客体の錯誤
+  kind: issue
+  parents: [gutaiteki-jijitsu-no-sakugo]
+
+- id: houhou-no-sakugo
+  name: 方法の錯誤
+  kind: issue
+  parents: [gutaiteki-jijitsu-no-sakugo]
+  aliases: [打撃の錯誤]
+  memo: 「打撃の錯誤」は同じものの別の呼び名とみてエイリアスにした
+
+- id: houteiteki-fugou-setsu
+  name: 法定的符合説
+  kind: issue
+  parents: [houhou-no-sakugo]
+  memo: 客体の錯誤でも問題になるが、論点は親を1つしか持てないので、争いが目立つ方法の錯誤の下に置いた
+
+- id: gutaiteki-fugou-setsu
+  name: 具体的符合説
+  kind: issue
+  parents: [houhou-no-sakugo]
+
+- id: inga-kankei-no-sakugo
+  name: 因果関係の錯誤
+  kind: issue
+  parents: [gutaiteki-jijitsu-no-sakugo]
+  related: [keiho-inga-kankei]
+
+- id: chuushouteki-jijitsu-no-sakugo
+  name: 抽象的事実の錯誤
+  kind: issue
+  parents: [keiho-sakugo]
+
+- id: ihousei-no-sakugo
+  name: 違法性の錯誤
+  kind: issue
+  parents: [keiho-sakugo, keiho-sekinin]
+  aliases: [法律の錯誤]
+  related: [ihousei-no-ishiki]
+  memo: 錯誤の一種だが、責任（違法性の意識）の問題でもある。「法律の錯誤」は同じものの別の呼び名とみた。人の確認が必要
+
+- id: kashitsu-han-no-kouzou
+  name: 過失犯の構造
+  kind: issue
+  parents: [keiho-kashitsu]
+
+- id: kyuu-kashitsu-ron
+  name: 旧過失論
+  kind: issue
+  parents: [kashitsu-han-no-kouzou]
+
+- id: shin-kashitsu-ron
+  name: 新過失論
+  kind: issue
+  parents: [kashitsu-han-no-kouzou]
+
+- id: shinrai-no-gensoku
+  name: 信頼の原則
+  kind: issue
+  parents: [keiho-kashitsu]
+
+# ---- 違法性 ----
+
+- id: ihousei-no-honshitsu
+  name: 違法性の本質
+  kind: issue
+  parents: [keiho-ihousei]
+
+- id: koui-mukachi-ron
+  name: 行為無価値論
+  kind: issue
+  parents: [ihousei-no-honshitsu]
+
+- id: kekka-mukachi-ron
+  name: 結果無価値論
+  kind: issue
+  parents: [ihousei-no-honshitsu]
+
+- id: kabatsuteki-ihousei
+  name: 可罰的違法性
+  kind: issue
+  parents: [keiho-ihousei]
+
+- id: higaisha-no-doui
+  name: 被害者の同意
+  kind: issue
+  parents: [keiho-ihousei-sokyaku-jiyuu, keiho-kousei-youken]
+  memo: 違法性阻却として扱うのが基本だが、罪によっては構成要件に当たらなくなる場面がある
+
+- id: shingai-no-kyuuhakusei
+  name: 侵害の急迫性
+  kind: issue
+  parents: [keiho-seitou-boui]
+
+- id: jishou-shingai
+  name: 自招侵害
+  kind: issue
+  parents: [keiho-seitou-boui]
+
+- id: bouei-no-ishi
+  name: 防衛の意思
+  kind: issue
+  parents: [keiho-seitou-boui]
+
+- id: kajou-boui
+  name: 過剰防衛
+  kind: issue
+  parents: [keiho-seitou-boui, keiho-sekinin]
+  memo: 36条2項で刑を減免できる理由を、違法の減少とみるか責任の減少とみるかで分かれる
+
+- id: gosou-boui
+  name: 誤想防衛
+  kind: issue
+  parents: [keiho-seitou-boui, keiho-sakugo]
+
+- id: gosou-kajou-boui
+  name: 誤想過剰防衛
+  kind: issue
+  parents: [keiho-seitou-boui, keiho-sakugo]
+  related: [gosou-boui, kajou-boui]
+
+- id: kinkyuu-hinan-no-houteki-seikaku
+  name: 緊急避難の法的性格
+  kind: issue
+  parents: [keiho-kinkyuu-hinan]
+
+# ---- 責任 ----
+
+- id: shinshin-soushitsu-shinshin-koujaku
+  name: 心神喪失・心神耗弱
+  kind: issue
+  parents: [keiho-sekinin-nouryoku]
+
+- id: gen-in-ni-oite-jiyuu-na-koui
+  name: 原因において自由な行為
+  kind: issue
+  parents: [keiho-sekinin-nouryoku, keiho-jikkou-koui]
+  memo: 責任能力の問題だが、実行行為をどこに見るかで説明する立場もあるので実行行為も親にした
+
+- id: ihousei-no-ishiki
+  name: 違法性の意識
+  kind: issue
+  parents: [keiho-sekinin]
+  memo: 「違法性の意識の可能性」はエイリアスにしない（どちらを責任の要件とみるかが学説の対立点）
+
+- id: kitai-kanousei
+  name: 期待可能性
+  kind: issue
+  parents: [keiho-sekinin]
+
+# ---- 未遂 ----
+
+- id: jikkou-no-chakushu
+  name: 実行の着手
+  kind: issue
+  parents: [keiho-misui, keiho-jikkou-koui]
+
+- id: funou-han
+  name: 不能犯
+  kind: issue
+  parents: [keiho-misui]
+
+- id: gutaiteki-kiken-setsu
+  name: 具体的危険説
+  kind: issue
+  parents: [funou-han]
+
+- id: kyakkanteki-kiken-setsu
+  name: 客観的危険説
+  kind: issue
+  parents: [funou-han]
+
+- id: chuushi-han
+  name: 中止犯
+  kind: issue
+  parents: [keiho-misui]
+  aliases: [中止未遂]
+
+- id: chuushi-no-nin-isei
+  name: 中止の任意性
+  kind: issue
+  parents: [chuushi-han]
+
+# ---- 共犯 ----
+
+- id: kyoubou-kyoudou-seihan
+  name: 共謀共同正犯
+  kind: issue
+  parents: [keiho-kyoudou-seihan]
+
+- id: shoukeiteki-kyouhan
+  name: 承継的共犯
+  kind: issue
+  parents: [keiho-kyouhan]
+
+- id: kyouhan-kankei-kara-no-ridatsu
+  name: 共犯関係からの離脱
+  kind: issue
+  parents: [keiho-kyouhan]
+  aliases: [共犯からの離脱]
+
+- id: kyouhan-to-mibun
+  name: 共犯と身分
+  kind: issue
+  parents: [keiho-kyouhan]
+
+- id: kyouhan-no-sakugo
+  name: 共犯の錯誤
+  kind: issue
+  parents: [keiho-kyouhan, keiho-sakugo]
+
+- id: kyouhan-no-juuzokusei
+  name: 共犯の従属性
+  kind: issue
+  parents: [keiho-kyougi-no-kyouhan]
+
+- id: fusakui-ni-yoru-kyouhan
+  name: 不作為による共犯
+  kind: issue
+  parents: [keiho-kyouhan]
+  related: [fusakui-han]
+
+# ---- 罪数・刑罰 ----
+
+- id: houkatsu-ichizai
+  name: 包括一罪
+  kind: issue
+  parents: [keiho-zaisuu]
+
+- id: kakei-jou-ichizai
+  name: 科刑上一罪
+  kind: issue
+  parents: [keiho-zaisuu]
+
+- id: shikkou-yuuyo
+  name: 刑の執行猶予
+  kind: issue
+  parents: [keiho-keibatsu]
+  aliases: [執行猶予]
+
+- id: koukinkei
+  name: 拘禁刑
+  kind: issue
+  parents: [keiho-keibatsu]
+  memo: 2025年6月から懲役と禁錮が拘禁刑にまとめられた。「懲役」「禁錮」はエイリアスにしない（中身が違う、古い制度のため）。古い過去問のタグをどうするかは人が確認
+
+# ---- 生命・身体・自由 ----
+
+- id: hito-no-shiki
+  name: 人の始期
+  kind: issue
+  parents: [keiho-seimei-shintai]
+
+- id: shougai-no-igi
+  name: 傷害の意義
+  kind: issue
+  parents: [keiho-seimei-shintai]
+
+- id: douji-shougai-no-tokurei
+  name: 同時傷害の特例
+  kind: issue
+  parents: [keiho-seimei-shintai, keiho-kyouhan]
+  memo: 207条。傷害罪の規定だが、共犯の成立範囲と一緒に問われることが多い
+
+- id: hogo-sekinin-sha-iki
+  name: 保護責任者遺棄罪の「保護責任」
+  kind: issue
+  parents: [keiho-seimei-shintai]
+  related: [fushinsei-fusakui-han-no-sakui-gimu]
+
+- id: kankin-zai-no-hogo-houeki
+  name: 監禁罪の保護法益
+  kind: issue
+  parents: [keiho-jiyuu]
+
+- id: juukyo-shinnyuu-zai-no-hogo-houeki
+  name: 住居侵入罪の保護法益
+  kind: issue
+  parents: [keiho-juukyo-shinnyuu]
+
+- id: juukyoken-setsu
+  name: 住居権説
+  kind: issue
+  parents: [juukyo-shinnyuu-zai-no-hogo-houeki]
+
+- id: heion-setsu
+  name: 平穏説
+  kind: issue
+  parents: [juukyo-shinnyuu-zai-no-hogo-houeki]
+
+# ---- 名誉・信用・業務 ----
+
+- id: shinjitsusei-no-shoumei
+  name: 名誉毀損罪における真実性の証明
+  kind: issue
+  parents: [keiho-meiyo]
+  related: [kenpo-hyougen-no-jiyuu]
+  memo: 230条の2。表現の自由との調整の規定なので、憲法の表現の自由と関連でつないだ
+
+- id: gyoumu-to-koumu
+  name: 業務妨害罪における公務
+  kind: issue
+  parents: [keiho-shinyou-gyoumu, keiho-koumu-bougai]
+  memo: 公務が「業務」に含まれるかの問題で、業務妨害罪と公務執行妨害罪の両方から問われる
+
+# ---- 財産犯 ----
+
+- id: zaisan-han-no-hogo-houeki
+  name: 財産犯の保護法益
+  kind: issue
+  parents: [keiho-zaisan]
+  memo: 学説は子の論点として立てた。窃盗罪で問われることが多いが、財産犯全体の問題として財産に対する罪の下に置いた
+
+- id: honken-setsu
+  name: 本権説
+  kind: issue
+  parents: [zaisan-han-no-hogo-houeki]
+
+- id: senyuu-setsu
+  name: 占有説
+  kind: issue
+  parents: [zaisan-han-no-hogo-houeki]
+
+- id: chuukan-setsu-zaisan-han
+  name: 中間説（財産犯の保護法益）
+  kind: issue
+  parents: [zaisan-han-no-hogo-houeki]
+
+- id: keihou-jou-no-senyuu
+  name: 刑法上の占有
+  kind: issue
+  parents: [keiho-zaisan]
+  memo: 民法の占有（占有権）とは意味が違う。民法を作るときに関連でつなぐ
+
+- id: shisha-no-senyuu
+  name: 死者の占有
+  kind: issue
+  parents: [keihou-jou-no-senyuu]
+
+- id: fuhou-ryoutoku-no-ishi
+  name: 不法領得の意思
+  kind: issue
+  parents: [keiho-zaisan]
+
+- id: shinzoku-soutou-rei
+  name: 親族相盗例
+  kind: issue
+  parents: [keiho-zaisan]
+  aliases: [親族間の犯罪に関する特例]
+  memo: 244条。窃盗罪の規定だが、詐欺・恐喝・横領にも準用されるので財産に対する罪の下に置いた
+
+- id: settou-to-sagi-no-kubetsu
+  name: 窃盗罪と詐欺罪の区別
+  kind: issue
+  parents: [keiho-settou, keiho-sagi]
+
+- id: goutou-no-bouko-kyouhaku
+  name: 強盗罪の暴行・脅迫
+  kind: issue
+  parents: [keiho-goutou]
+
+- id: jigo-goutou
+  name: 事後強盗罪
+  kind: issue
+  parents: [keiho-goutou]
+
+- id: jigo-goutou-to-kyouhan
+  name: 事後強盗罪と共犯
+  kind: issue
+  parents: [keiho-goutou, keiho-kyouhan]
+  related: [kyouhan-to-mibun]
+
+- id: goutou-chishishou
+  name: 強盗致死傷罪
+  kind: issue
+  parents: [keiho-goutou]
+
+- id: goutou-no-kikai
+  name: 強盗の機会
+  kind: issue
+  parents: [goutou-chishishou]
+
+- id: gimou-koui
+  name: 欺罔行為
+  kind: issue
+  parents: [keiho-sagi]
+  aliases: [欺く行為]
+  memo: 条文は「人を欺いて」。「欺く行為」は条文に寄せた言い方で、指すものは同じとみた
+
+- id: shobun-koui
+  name: 処分行為
+  kind: issue
+  parents: [keiho-sagi]
+
+- id: sankaku-sagi
+  name: 三角詐欺
+  kind: issue
+  parents: [shobun-koui]
+
+- id: denshi-keisanki-shiyou-sagi
+  name: 電子計算機使用詐欺罪
+  kind: issue
+  parents: [keiho-sagi]
+
+- id: itaku-shinnin-kankei
+  name: 委託信任関係
+  kind: issue
+  parents: [keiho-ouryou]
+
+- id: ouryou-go-no-ouryou
+  name: 横領後の横領
+  kind: issue
+  parents: [keiho-ouryou]
+
+- id: fuhou-gen-in-kyuufu-to-ouryou
+  name: 不法原因給付と横領罪
+  kind: issue
+  parents: [keiho-ouryou]
+  memo: 民法708条（不法原因給付）と関連でつなぐ予定
+
+- id: ouryou-to-hainin-no-kubetsu
+  name: 横領罪と背任罪の区別
+  kind: issue
+  parents: [keiho-ouryou, keiho-hainin]
+
+- id: hainin-zai-no-honshitsu
+  name: 背任罪の本質
+  kind: issue
+  parents: [keiho-hainin]
+
+- id: kengen-ranyou-setsu
+  name: 権限濫用説
+  kind: issue
+  parents: [hainin-zai-no-honshitsu]
+
+- id: haishin-setsu
+  name: 背信説
+  kind: issue
+  parents: [hainin-zai-no-honshitsu]
+
+- id: touhin-zai-no-honshitsu
+  name: 盗品等関与罪の本質
+  kind: issue
+  parents: [keiho-touhin]
+
+# ---- 社会的法益 ----
+
+- id: shouson-no-igi
+  name: 焼損の意義
+  kind: issue
+  parents: [keiho-houka]
+
+- id: genjuusei
+  name: 現住性
+  kind: issue
+  parents: [keiho-houka]
+
+- id: yuukei-gizou-to-mukei-gizou
+  name: 有形偽造と無形偽造
+  kind: issue
+  parents: [keiho-bunsho-gizou]
+
+- id: meigi-nin-no-shoudaku
+  name: 名義人の承諾
+  kind: issue
+  parents: [yuukei-gizou-to-mukei-gizou]
+
+- id: waisetsu-no-gainen
+  name: わいせつの概念
+  kind: issue
+  parents: [keiho-fuuzoku]
+  related: [kenpo-hyougen-no-jiyuu]
+
+# ---- 国家的法益 ----
+
+- id: shokumu-no-tekihousei
+  name: 職務の適法性
+  kind: issue
+  parents: [keiho-koumu-bougai]
+
+- id: hannin-jishin-no-kyousa
+  name: 犯人自身による犯人蔵匿・証拠隠滅の教唆
+  kind: issue
+  parents: [keiho-shihou-sayou, keiho-kyousa-han]
+
+- id: wairo-zai-no-shokumu-kanrensei
+  name: 賄賂罪の職務関連性
+  kind: issue
+  parents: [keiho-oshoku]

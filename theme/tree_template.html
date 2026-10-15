@@ -1,4 +1,4 @@
-<title>憲法テーマ樹形図</title>
+<title>__TITLE__</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400&display=swap">
@@ -95,7 +95,7 @@ details[open] > summary .caret { transform: rotate(90deg); }
 
 <div class="wrap">
   <header>
-    <h1>憲法テーマ樹形図</h1>
+    <h1>__TITLE__</h1>
     <p id="stats"></p>
     <div class="legend">
       <span><b style="color:var(--structure)">太字の紺</b>＝構造エリア</span>
@@ -116,12 +116,14 @@ details[open] > summary .caret { transform: rotate(90deg); }
 
 <script>
 const DATA = /*DATA*/[];
-const byId = Object.fromEntries(DATA.map(t => [t.id, t]));
+// REF: ほかの科目のテーマ。関連の名前を出すためだけに使い、樹形図には出さない
+const REF = /*REF*/[];
+const byId = Object.fromEntries([...REF, ...DATA].map(t => [t.id, t]));
 const children = {};
 DATA.forEach(t => (t.parents || []).forEach(p => (children[p] ||= []).push(t.id)));
 const relatedOf = id => {
   const s = new Set(byId[id].related || []);
-  DATA.forEach(t => (t.related || []).includes(id) && s.add(t.id));
+  [...DATA, ...REF].forEach(t => (t.related || []).includes(id) && s.add(t.id));
   return [...s];
 };
 const issueLevel = id => {
@@ -169,7 +171,9 @@ function renderTree() {
 }
 
 const linkList = ids => ids.length
-  ? ids.map(i => `<button class="link" type="button" data-go="${i}">${byId[i]?.name ?? i}</button>`).join('')
+  ? ids.map(i => byId[i]?._from
+      ? `<span class="tag">${byId[i].name}（${byId[i]._from}）</span>`
+      : `<button class="link" type="button" data-go="${i}">${byId[i]?.name ?? i}</button>`).join('')
   : '<span class="none">なし</span>';
 
 function renderDetail() {
@@ -210,7 +214,7 @@ document.getElementById('tree').addEventListener('keydown', e => {
 });
 document.getElementById('detail').addEventListener('click', e => {
   const g = e.target.closest('[data-go]');
-  if (g && byId[g.dataset.go]) {
+  if (g && byId[g.dataset.go] && !byId[g.dataset.go]._from) {
     if (query) { query = ''; document.getElementById('q').value = ''; }
     select(g.dataset.go, true);
   }
