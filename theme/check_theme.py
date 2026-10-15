@@ -9,7 +9,7 @@ import sys
 import yaml
 
 ID_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
-KEYS = {"id", "name", "kind", "parents", "aliases", "related", "memo"}
+KEYS = {"id", "name", "kind", "parents", "aliases", "related", "next", "memo"}
 
 
 def load(paths):
@@ -52,6 +52,13 @@ def check(items):
                 errors.append(f"{tid}: 関連 {r} が存在しない")
             elif r in parents:
                 errors.append(f"{tid}: 関連 {r} は親でもある")
+        for n in t.get("next") or []:
+            if n not in by_id:
+                errors.append(f"{tid}: 次の段階 {n} が存在しない")
+            elif n == tid:
+                errors.append(f"{tid}: 次の段階が自分自身")
+            elif t["kind"] != "structure" or by_id[n]["kind"] != "structure":
+                errors.append(f"{tid}: 次の段階（next）は構造エリアどうしだけに張る")
         if len(parents) != len(set(parents)):
             errors.append(f"{tid}: 親が重複")
         if t["kind"] == "structure":

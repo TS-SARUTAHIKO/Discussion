@@ -91,6 +91,11 @@ details[open] > summary .caret { transform: rotate(90deg); }
 .tag { font-size: 0.85rem; background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 0 6px; }
 .none { color: var(--muted); font-size: 0.85rem; }
 .empty { color: var(--muted); padding: 8px; }
+.flow { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; min-width: 0; }
+.flow > summary { font-weight: 700; cursor: pointer; }
+.flow h3 { font-size: 0.9rem; color: var(--muted); margin: 14px 0 6px; letter-spacing: 0.04em; }
+.flow p { margin: 6px 0 0; color: var(--muted); font-size: 0.85rem; }
+.flow-box { overflow-x: auto; }
 </style>
 
 <div class="wrap">
@@ -108,6 +113,7 @@ details[open] > summary .caret { transform: rotate(90deg); }
     <button id="open-all" type="button">すべて開く</button>
     <button id="close-issues" type="button">論点を閉じる</button>
   </div>
+  <!--FLOW-->
   <div class="main">
     <nav class="tree" id="tree" aria-label="テーマの樹形図"></nav>
     <aside class="detail" id="detail" aria-live="polite"></aside>
@@ -121,6 +127,8 @@ const REF = /*REF*/[];
 const byId = Object.fromEntries([...REF, ...DATA].map(t => [t.id, t]));
 const children = {};
 DATA.forEach(t => (t.parents || []).forEach(p => (children[p] ||= []).push(t.id)));
+const nextOf = {}, prevOf = {};
+DATA.forEach(t => (t.next || []).forEach(n => { (nextOf[t.id] ||= []).push(n); (prevOf[n] ||= []).push(t.id); }));
 const relatedOf = id => {
   const s = new Set(byId[id].related || []);
   [...DATA, ...REF].forEach(t => (t.related || []).includes(id) && s.add(t.id));
@@ -189,6 +197,8 @@ function renderDetail() {
       <div><dt>親</dt><dd>${linkList(t.parents || [])}</dd></div>
       <div><dt>子</dt><dd>${linkList(children[t.id] || [])}</dd></div>
       <div><dt>エイリアス</dt><dd>${(t.aliases || []).length ? t.aliases.map(a => `<span class="tag">${a}</span>`).join('') : '<span class="none">なし</span>'}</dd></div>
+      ${(nextOf[t.id] || prevOf[t.id]) ? `<div><dt>前の段階</dt><dd>${linkList(prevOf[t.id] || [])}</dd></div>
+      <div><dt>次の段階</dt><dd>${linkList(nextOf[t.id] || [])}</dd></div>` : ''}
       <div><dt>関連</dt><dd>${linkList(relatedOf(t.id))}</dd></div>
       <div><dt>メモ</dt><dd class="memo">${t.memo || '<span class="none">なし</span>'}</dd></div>
     </dl>`;

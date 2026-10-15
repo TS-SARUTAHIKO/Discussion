@@ -1,0 +1,723 @@
+# 刑事訴訟法 テーマ体系 素案 v0.1
+#
+# 規則は「テーマ体系の作り方（素案づくり用の手引き）」に従う。書き方は kenpo.yaml・keiho.yaml と同じ。
+# この科目から、構造エリアに next（次の段階）を試しに足している。
+# - next: 手続の上で次に進む段階の ID。向きを持つ。分かれ道は複数書く。構造エリアどうしだけに張る
+# - next は親子関係とは別のもの。タグ付けと集計は今までどおり親子関係（樹形図）で行う
+# - 手続の流れに乗らない枠（基本原則・訴訟主体・証拠）には next を書かない
+# - related は向きを持たないので片側にだけ書く。憲法・刑法のテーマとの関連もこちら側に書いた
+# 迷った点・決めきれなかった点は keiso_memo.md にまとめている。
+
+# ============================================================
+# 構造エリア（structure）
+# ============================================================
+
+- id: keiso
+  name: 刑事訴訟法
+  kind: structure
+  parents: []
+  aliases: [刑訴法, 刑訴]
+  related: []
+  memo: ""
+
+# ---- 流れに乗らない枠 ----
+
+- id: keiso-kihon-gensoku
+  name: 刑事訴訟の基本原則
+  kind: structure
+  parents: [keiso]
+  memo: 当事者主義など、どの段階にも出てくる原則の枠
+
+- id: keiso-soshou-shutai
+  name: 訴訟主体
+  kind: structure
+  parents: [keiso]
+  memo: 裁判所・検察官・被告人・弁護人
+
+# ---- 手続の大きな流れ：捜査 → 公訴 → 公判 → 裁判 → 上訴 / 非常救済 ----
+
+- id: keiso-sousa
+  name: 捜査
+  kind: structure
+  parents: [keiso]
+  next: [keiso-kouso]
+
+- id: keiso-kouso
+  name: 公訴
+  kind: structure
+  parents: [keiso]
+  next: [keiso-kouhan, keiso-tokubetsu-tetsuzuki]
+  memo: 公判に進むほか、略式手続などの特別な手続に分かれる。不起訴で終わる道は段階として立てていない
+
+- id: keiso-tokubetsu-tetsuzuki
+  name: 特別な手続
+  kind: structure
+  parents: [keiso]
+  next: [keiso-saiban]
+  memo: 略式手続・即決裁判手続
+
+- id: keiso-kouhan
+  name: 公判
+  kind: structure
+  parents: [keiso]
+  next: [keiso-saiban]
+
+- id: keiso-saiban
+  name: 裁判（刑事訴訟法）
+  kind: structure
+  parents: [keiso]
+  next: [keiso-jouso, keiso-hijou-kyuusai]
+  memo: 「裁判」は憲法（司法）・民事訴訟法でも使う言葉なので科目名を添えた
+
+- id: keiso-jouso
+  name: 上訴（刑事訴訟法）
+  kind: structure
+  parents: [keiso]
+  next: [keiso-hijou-kyuusai]
+  memo: 上訴が尽きて裁判が確定したあとに非常救済手続がある。差戻しで公判に戻る流れは、細かい段階のほうに書いた
+
+- id: keiso-hijou-kyuusai
+  name: 非常救済手続
+  kind: structure
+  parents: [keiso]
+  memo: 再審・非常上告
+
+# ---- 証拠（流れに乗らない大きな枠） ----
+
+- id: keiso-shouko
+  name: 証拠（刑事訴訟法）
+  kind: structure
+  parents: [keiso]
+  related: [keiso-shouko-shirabe]
+  memo: 公判の証拠調べで使う決まりだが、基本書では独立した大きな章になっているので段階とは別の枠にした
+
+# ---- 捜査の中の段階 ----
+
+- id: keiso-sousa-no-tansho
+  name: 捜査の端緒
+  kind: structure
+  parents: [keiso-sousa]
+  memo: 職務質問・所持品検査・告訴・告発・自首など
+
+- id: keiso-nin-i-sousa-to-kyousei-sousa
+  name: 任意捜査と強制捜査
+  kind: structure
+  parents: [keiso-sousa]
+
+- id: keiso-taiho
+  name: 逮捕
+  kind: structure
+  parents: [keiso-sousa]
+  next: [keiso-kouryuu]
+
+- id: keiso-kouryuu
+  name: 勾留
+  kind: structure
+  parents: [keiso-sousa]
+  next: [keiso-kouso-no-teiki]
+  memo: 起訴後の被告人の勾留もあるが、被疑者の勾留が中心なので捜査の下に置いた
+
+- id: keiso-sousaku-sashiosae
+  name: 捜索・差押え
+  kind: structure
+  parents: [keiso-sousa]
+
+- id: keiso-torishirabe
+  name: 取調べ
+  kind: structure
+  parents: [keiso-sousa]
+
+- id: keiso-higisha-hikokunin-no-bougyo
+  name: 被疑者・被告人の防御
+  kind: structure
+  parents: [keiso-sousa, keiso-kouhan]
+  memo: 弁護人・接見交通・黙秘権など。捜査と公判の両方にまたがる
+
+# ---- 公訴の中 ----
+
+- id: keiso-kouso-no-teiki
+  name: 公訴の提起
+  kind: structure
+  parents: [keiso-kouso]
+  next: [keiso-kouhan-junbi, keiso-tokubetsu-tetsuzuki]
+
+- id: keiso-soin
+  name: 訴因
+  kind: structure
+  parents: [keiso-kouso, keiso-kouhan]
+  memo: 起訴状で示し（公訴）、公判で変更が問題になる（公判）。両方を親にした
+
+# ---- 公判の中の段階 ----
+
+- id: keiso-kouhan-junbi
+  name: 公判準備
+  kind: structure
+  parents: [keiso-kouhan]
+  next: [keiso-boutou-tetsuzuki]
+  memo: 公判前整理手続を含む
+
+- id: keiso-kouhan-tetsuzuki
+  name: 公判手続
+  kind: structure
+  parents: [keiso-kouhan]
+  memo: 冒頭手続・証拠調べ・論告と弁論の枠
+
+- id: keiso-boutou-tetsuzuki
+  name: 冒頭手続
+  kind: structure
+  parents: [keiso-kouhan-tetsuzuki]
+  next: [keiso-shouko-shirabe]
+
+- id: keiso-shouko-shirabe
+  name: 証拠調べ手続
+  kind: structure
+  parents: [keiso-kouhan-tetsuzuki]
+  next: [keiso-ronkoku-benron]
+
+- id: keiso-ronkoku-benron
+  name: 論告・弁論
+  kind: structure
+  parents: [keiso-kouhan-tetsuzuki]
+  next: [keiso-hanketsu]
+
+# ---- 裁判・上訴・非常救済の中 ----
+
+- id: keiso-hanketsu
+  name: 判決（刑事訴訟法）
+  kind: structure
+  parents: [keiso-saiban]
+  next: [keiso-jouso-kouso, keiso-saiban-no-kouryoku]
+  memo: 控訴されるか、確定して効力が生じるかに分かれる
+
+- id: keiso-saiban-no-kouryoku
+  name: 裁判の効力（刑事訴訟法）
+  kind: structure
+  parents: [keiso-saiban]
+  next: [keiso-saishin, keiso-hijou-joukoku]
+  memo: 確定した裁判の効力（一事不再理効など）
+
+- id: keiso-jouso-kouso
+  name: 控訴
+  kind: structure
+  parents: [keiso-jouso]
+  next: [keiso-jouso-joukoku, keiso-saiban-no-kouryoku, keiso-kouhan-tetsuzuki]
+  memo: 公判手続へ戻る矢印は、破棄差戻しの場合
+
+- id: keiso-jouso-joukoku
+  name: 上告
+  kind: structure
+  parents: [keiso-jouso]
+  next: [keiso-saiban-no-kouryoku, keiso-kouhan-tetsuzuki]
+  memo: 公判手続へ戻る矢印は、破棄差戻しの場合
+
+- id: keiso-jouso-koukoku
+  name: 抗告
+  kind: structure
+  parents: [keiso-jouso]
+  memo: 判決ではなく決定・命令に対する不服申立て。判決からの流れには乗らないので next は書いていない
+
+- id: keiso-saishin
+  name: 再審
+  kind: structure
+  parents: [keiso-hijou-kyuusai]
+  next: [keiso-kouhan-tetsuzuki]
+  memo: 再審開始決定のあと、審判がやり直される
+
+- id: keiso-hijou-joukoku
+  name: 非常上告
+  kind: structure
+  parents: [keiso-hijou-kyuusai]
+
+# ---- 証拠の中 ----
+
+- id: keiso-shouko-no-kihon-gensoku
+  name: 証拠法の基本原則
+  kind: structure
+  parents: [keiso-shouko]
+
+- id: keiso-jihaku
+  name: 自白（刑事訴訟法）
+  kind: structure
+  parents: [keiso-shouko]
+  memo: 民事訴訟法の「裁判上の自白」とは意味が違うので科目名を添えた
+
+- id: keiso-denbun-shouko
+  name: 伝聞証拠
+  kind: structure
+  parents: [keiso-shouko]
+  aliases: [伝聞法則]
+  memo: 「伝聞法則」は伝聞証拠の扱いの決まり全体を指す呼び名として、同じ枠のエイリアスにした。人の確認が必要
+
+- id: keiso-ihou-shuushuu-shouko
+  name: 違法収集証拠
+  kind: structure
+  parents: [keiso-shouko, keiso-sousa]
+  memo: 証拠能力の問題だが、もとは捜査の違法の問題なので捜査も親にした
+
+# ============================================================
+# 論点エリア（issue）  ※代表例だけ。網羅していない
+# ============================================================
+
+# ---- 基本原則・訴訟主体 ----
+
+- id: toujisha-shugi-keiso
+  name: 当事者主義（刑事訴訟法）
+  kind: issue
+  parents: [keiso-kihon-gensoku]
+  memo: 民事訴訟法でも使う言葉で意味の重なりがあるが、同じテーマにしてよいかは人が判断
+
+- id: hikokunin-no-tokutei
+  name: 被告人の特定
+  kind: issue
+  parents: [keiso-soshou-shutai]
+
+- id: kokusen-bengo
+  name: 国選弁護
+  kind: issue
+  parents: [keiso-soshou-shutai, keiso-higisha-hikokunin-no-bougyo]
+
+# ---- 捜査 ----
+
+- id: shokumu-shitsumon
+  name: 職務質問
+  kind: issue
+  parents: [keiso-sousa-no-tansho]
+
+- id: shojihin-kensa
+  name: 所持品検査
+  kind: issue
+  parents: [shokumu-shitsumon]
+
+- id: jidousha-kenmon
+  name: 自動車検問
+  kind: issue
+  parents: [keiso-sousa-no-tansho]
+
+- id: kyousei-shobun-no-igi
+  name: 強制処分の意義
+  kind: issue
+  parents: [keiso-nin-i-sousa-to-kyousei-sousa]
+  related: [reijou-shugi]
+
+- id: gps-sousa
+  name: GPS捜査
+  kind: issue
+  parents: [kyousei-shobun-no-igi]
+
+- id: nin-i-sousa-no-genkai
+  name: 任意捜査の限界
+  kind: issue
+  parents: [keiso-nin-i-sousa-to-kyousei-sousa]
+
+- id: yuukeiryoku-no-koushi
+  name: 有形力の行使
+  kind: issue
+  parents: [nin-i-sousa-no-genkai]
+
+- id: shashin-satsuei
+  name: 写真撮影・ビデオ撮影
+  kind: issue
+  parents: [nin-i-sousa-no-genkai]
+
+- id: otori-sousa
+  name: おとり捜査
+  kind: issue
+  parents: [nin-i-sousa-no-genkai]
+
+- id: nin-i-doukou-to-jisshitsuteki-taiho
+  name: 任意同行と実質的逮捕
+  kind: issue
+  parents: [keiso-nin-i-sousa-to-kyousei-sousa, keiso-taiho]
+
+- id: taiho-no-shurui
+  name: 逮捕の種類
+  kind: issue
+  parents: [keiso-taiho]
+
+- id: tsuujou-taiho
+  name: 通常逮捕
+  kind: issue
+  parents: [taiho-no-shurui]
+
+- id: genkouhan-taiho
+  name: 現行犯逮捕
+  kind: issue
+  parents: [taiho-no-shurui]
+
+- id: jun-genkouhan
+  name: 準現行犯
+  kind: issue
+  parents: [genkouhan-taiho]
+
+- id: kinkyuu-taiho
+  name: 緊急逮捕
+  kind: issue
+  parents: [taiho-no-shurui]
+
+- id: taiho-zenchi-shugi
+  name: 逮捕前置主義
+  kind: issue
+  parents: [keiso-kouryuu, keiso-taiho]
+
+- id: jiken-tan-i-no-gensoku
+  name: 事件単位の原則
+  kind: issue
+  parents: [keiso-kouryuu, keiso-taiho]
+
+- id: bekken-taiho-kouryuu
+  name: 別件逮捕・勾留
+  kind: issue
+  parents: [keiso-taiho, keiso-kouryuu]
+  related: [yozai-torishirabe]
+
+- id: sai-taiho-sai-kouryuu
+  name: 再逮捕・再勾留
+  kind: issue
+  parents: [keiso-taiho, keiso-kouryuu]
+
+- id: kouryuu-no-riyuu-to-hitsuyou
+  name: 勾留の理由と必要
+  kind: issue
+  parents: [keiso-kouryuu]
+
+- id: hoshaku
+  name: 保釈
+  kind: issue
+  parents: [keiso-kouryuu, keiso-kouhan]
+  memo: 起訴後の被告人の勾留についての制度なので、公判も親にした
+
+- id: reijou-ni-yoru-sousaku-sashiosae
+  name: 令状による捜索・差押え
+  kind: issue
+  parents: [keiso-sousaku-sashiosae]
+  related: [reijou-shugi]
+
+- id: reijou-no-tokuteisei
+  name: 令状の特定性
+  kind: issue
+  parents: [reijou-ni-yoru-sousaku-sashiosae]
+
+- id: igoawaseta-mono-no-shintai
+  name: 捜索場所に居合わせた者の身体の捜索
+  kind: issue
+  parents: [reijou-ni-yoru-sousaku-sashiosae]
+
+- id: taiho-ni-tomonau-sousaku-sashiosae
+  name: 逮捕に伴う捜索・差押え
+  kind: issue
+  parents: [keiso-sousaku-sashiosae, keiso-taiho]
+  aliases: [逮捕に伴う無令状捜索・差押え]
+  related: [reijou-shugi]
+
+- id: taiho-no-genba
+  name: 「逮捕の現場」の意味
+  kind: issue
+  parents: [taiho-ni-tomonau-sousaku-sashiosae]
+
+- id: denjiteki-kiroku-no-sashiosae
+  name: 電磁的記録の差押え
+  kind: issue
+  parents: [keiso-sousaku-sashiosae]
+
+- id: torishirabe-junin-gimu
+  name: 取調べ受忍義務
+  kind: issue
+  parents: [keiso-torishirabe]
+
+- id: yozai-torishirabe
+  name: 余罪取調べ
+  kind: issue
+  parents: [keiso-torishirabe]
+
+- id: torishirabe-no-kashika
+  name: 取調べの録音・録画
+  kind: issue
+  parents: [keiso-torishirabe]
+  aliases: [取調べの可視化]
+  memo: 「取調べの可視化」は同じ制度の通称とみてエイリアスにした。人の確認が必要
+
+- id: mokuhiken
+  name: 黙秘権
+  kind: issue
+  parents: [keiso-higisha-hikokunin-no-bougyo, keiso-torishirabe]
+  related: [jiko-fusai-kyohi-tokken]
+  memo: 憲法の「自己負罪拒否特権」とは保障の範囲が違うのでエイリアスにせず、関連でつないだ
+
+- id: sekken-koutsuuken
+  name: 接見交通権
+  kind: issue
+  parents: [keiso-higisha-hikokunin-no-bougyo]
+
+- id: sekken-shitei
+  name: 接見指定
+  kind: issue
+  parents: [sekken-koutsuuken]
+
+# ---- 公訴・訴因 ----
+
+- id: kiso-benngi-shugi
+  name: 起訴便宜主義
+  kind: issue
+  parents: [keiso-kouso]
+
+- id: kousoken-ranyou-ron
+  name: 公訴権濫用論
+  kind: issue
+  parents: [keiso-kouso]
+
+- id: kouso-jikou
+  name: 公訴時効
+  kind: issue
+  parents: [keiso-kouso]
+
+- id: kisojou-ippon-shugi
+  name: 起訴状一本主義
+  kind: issue
+  parents: [keiso-kouso-no-teiki]
+  memo: 予断排除の原則の一つ。「予断排除の原則」はより広いのでエイリアスにしない
+
+- id: ichizai-no-ichibu-kiso
+  name: 一罪の一部起訴
+  kind: issue
+  parents: [keiso-kouso, keiso-soin]
+
+- id: shinpan-taishou
+  name: 審判の対象
+  kind: issue
+  parents: [keiso-soin]
+
+- id: soin-taishou-setsu
+  name: 訴因対象説
+  kind: issue
+  parents: [shinpan-taishou]
+
+- id: kouso-jijitsu-taishou-setsu
+  name: 公訴事実対象説
+  kind: issue
+  parents: [shinpan-taishou]
+
+- id: soin-no-tokutei
+  name: 訴因の特定
+  kind: issue
+  parents: [keiso-soin]
+
+- id: soin-henkou-no-youhi
+  name: 訴因変更の要否
+  kind: issue
+  parents: [keiso-soin]
+
+- id: kouso-jijitsu-no-douitsusei
+  name: 公訴事実の同一性
+  kind: issue
+  parents: [keiso-soin]
+  related: [ichiji-fusairi-kou]
+  memo: 訴因変更の可否の基準。一事不再理効の範囲とも関わる
+
+- id: soin-henkou-meirei
+  name: 訴因変更命令
+  kind: issue
+  parents: [keiso-soin]
+
+# ---- 公判 ----
+
+- id: kouhan-mae-seiri-tetsuzuki
+  name: 公判前整理手続
+  kind: issue
+  parents: [keiso-kouhan-junbi]
+
+- id: shouko-kaiji
+  name: 証拠開示
+  kind: issue
+  parents: [kouhan-mae-seiri-tetsuzuki]
+
+- id: saibanin-seido
+  name: 裁判員制度
+  kind: issue
+  parents: [keiso-kouhan]
+
+- id: shounin-jinmon
+  name: 証人尋問
+  kind: issue
+  parents: [keiso-shouko-shirabe]
+
+# ---- 証拠 ----
+
+- id: shouko-saiban-shugi
+  name: 証拠裁判主義
+  kind: issue
+  parents: [keiso-shouko-no-kihon-gensoku]
+
+- id: genkaku-na-shoumei
+  name: 厳格な証明と自由な証明
+  kind: issue
+  parents: [keiso-shouko-no-kihon-gensoku]
+
+- id: jiyuu-shinshou-shugi-keiso
+  name: 自由心証主義（刑事訴訟法）
+  kind: issue
+  parents: [keiso-shouko-no-kihon-gensoku]
+
+- id: rieki-gensoku
+  name: 「疑わしきは被告人の利益に」
+  kind: issue
+  parents: [keiso-shouko-no-kihon-gensoku]
+  aliases: [利益原則]
+
+- id: shouko-no-kanrensei
+  name: 証拠の関連性
+  kind: issue
+  parents: [keiso-shouko]
+
+- id: kagakuteki-shouko
+  name: 科学的証拠
+  kind: issue
+  parents: [shouko-no-kanrensei]
+
+- id: ruiji-jijitsu-ni-yoru-ritsushou
+  name: 類似事実による立証
+  kind: issue
+  parents: [shouko-no-kanrensei]
+
+- id: jihaku-housoku
+  name: 自白法則
+  kind: issue
+  parents: [keiso-jihaku]
+  related: [jiko-fusai-kyohi-tokken]
+
+- id: jihaku-housoku-no-konkyo
+  name: 自白法則の根拠
+  kind: issue
+  parents: [jihaku-housoku]
+
+- id: kyogi-haijo-setsu
+  name: 虚偽排除説
+  kind: issue
+  parents: [jihaku-housoku-no-konkyo]
+
+- id: jinken-yougo-setsu
+  name: 人権擁護説
+  kind: issue
+  parents: [jihaku-housoku-no-konkyo]
+
+- id: ihou-haijo-setsu
+  name: 違法排除説
+  kind: issue
+  parents: [jihaku-housoku-no-konkyo]
+
+- id: yakusoku-ni-yoru-jihaku
+  name: 約束による自白
+  kind: issue
+  parents: [jihaku-housoku]
+
+- id: hokyou-housoku
+  name: 補強法則
+  kind: issue
+  parents: [keiso-jihaku]
+
+- id: kyouhansha-no-jihaku
+  name: 共犯者の自白
+  kind: issue
+  parents: [keiso-jihaku]
+
+- id: denbun-shouko-no-igi
+  name: 伝聞証拠の意義
+  kind: issue
+  parents: [keiso-denbun-shouko]
+
+- id: denbun-to-hi-denbun
+  name: 伝聞と非伝聞の区別
+  kind: issue
+  parents: [denbun-shouko-no-igi]
+
+- id: denbun-reigai
+  name: 伝聞例外
+  kind: issue
+  parents: [keiso-denbun-shouko]
+
+- id: kenmen-chousho
+  name: 検察官面前調書
+  kind: issue
+  parents: [denbun-reigai]
+  aliases: [検面調書, 2号書面]
+  memo: 「2号書面」は321条1項2号の書面の略称
+
+- id: jikkyou-kenbun-chousho
+  name: 実況見分調書
+  kind: issue
+  parents: [denbun-reigai]
+
+- id: doui-shomen
+  name: 同意書面
+  kind: issue
+  parents: [keiso-denbun-shouko]
+
+- id: dangai-shouko
+  name: 弾劾証拠
+  kind: issue
+  parents: [keiso-denbun-shouko]
+
+- id: sai-denbun
+  name: 再伝聞
+  kind: issue
+  parents: [keiso-denbun-shouko]
+
+- id: ihou-shuushuu-shouko-haijo-housoku
+  name: 違法収集証拠排除法則
+  kind: issue
+  parents: [keiso-ihou-shuushuu-shouko]
+  aliases: [違法収集証拠の排除法則, 排除法則]
+
+- id: haijo-no-kijun
+  name: 排除の基準
+  kind: issue
+  parents: [ihou-shuushuu-shouko-haijo-housoku]
+
+- id: dokuju-no-kajitsu
+  name: 毒樹の果実
+  kind: issue
+  parents: [ihou-shuushuu-shouko-haijo-housoku]
+
+# ---- 裁判・上訴・非常救済・特別な手続 ----
+
+- id: takuitsuteki-nintei
+  name: 択一的認定
+  kind: issue
+  parents: [keiso-hanketsu]
+
+- id: ichiji-fusairi-kou
+  name: 一事不再理効
+  kind: issue
+  parents: [keiso-saiban-no-kouryoku]
+  related: [ichiji-fusairi]
+  memo: 憲法39条の「一事不再理」と関連でつないだ
+
+- id: furieki-henkou-kinshi-keiso
+  name: 不利益変更禁止（刑事訴訟法）
+  kind: issue
+  parents: [keiso-jouso]
+  memo: 民事訴訟法にも同じ名前の原則があり意味が違うので科目名を添えた
+
+- id: koubou-taishou-ron
+  name: 攻防対象論
+  kind: issue
+  parents: [keiso-jouso-kouso]
+
+- id: kouso-riyuu
+  name: 控訴理由
+  kind: issue
+  parents: [keiso-jouso-kouso]
+
+- id: saishin-jiyuu-no-meihakusei
+  name: 再審事由の明白性
+  kind: issue
+  parents: [keiso-saishin]
+
+- id: ryakushiki-tetsuzuki
+  name: 略式手続
+  kind: issue
+  parents: [keiso-tokubetsu-tetsuzuki]
+
+- id: sokketsu-saiban-tetsuzuki
+  name: 即決裁判手続
+  kind: issue
+  parents: [keiso-tokubetsu-tetsuzuki]
