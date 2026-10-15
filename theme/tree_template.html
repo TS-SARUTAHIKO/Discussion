@@ -1,0 +1,224 @@
+<title>憲法テーマ樹形図</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400&display=swap">
+<style>
+/* Layout: 左に樹形図、右に選んだテーマの詳細。狭い画面では縦に積む */
+:root {
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --fg: #1d2433;
+  --muted: #5d6677;
+  --line: #d9dde5;
+  --structure: #27408b;
+  --structure-soft: #e7ebf7;
+  --issue: #3d6b4f;
+  --issue-soft: #e5f0e9;
+  --poly: #9a5b00;
+  --poly-soft: #fbefd9;
+  --hit: #fff1a8;
+  --font-display: "Shippori Mincho B1", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --font-body: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12151c; --surface: #1a1f29; --fg: #e4e8ef; --muted: #9aa3b4; --line: #2e3542;
+    --structure: #9db2f0; --structure-soft: #232d48; --issue: #8fc7a4; --issue-soft: #1f3328;
+    --poly: #f0b860; --poly-soft: #3a2c14; --hit: #5a4b10; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12151c; --surface: #1a1f29; --fg: #e4e8ef; --muted: #9aa3b4; --line: #2e3542;
+  --structure: #9db2f0; --structure-soft: #232d48; --issue: #8fc7a4; --issue-soft: #1f3328;
+  --poly: #f0b860; --poly-soft: #3a2c14; --hit: #5a4b10; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 40px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 16px; }
+header h1 { font-family: var(--font-display); font-size: 1.6rem; margin: 0; text-wrap: balance; }
+header p { margin: 4px 0 0; color: var(--muted); font-size: 0.88rem; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 0.82rem; color: var(--muted); margin-top: 8px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.toolbar input {
+  flex: 1 1 220px; min-width: 0; font: inherit; padding: 8px 12px; border: 1px solid var(--line);
+  border-radius: 6px; background: var(--surface); color: var(--fg);
+}
+button {
+  font: inherit; font-size: 0.85rem; padding: 7px 12px; border: 1px solid var(--line); border-radius: 6px;
+  background: var(--surface); color: var(--fg); cursor: pointer;
+}
+button:hover { border-color: var(--structure); }
+:focus-visible { outline: 2px solid var(--structure); outline-offset: 2px; }
+.main { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 16px; align-items: start; }
+@media (max-width: 820px) { .main { grid-template-columns: minmax(0, 1fr); } .detail { position: static; order: -1; } }
+.tree { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 8px; overflow-x: auto; }
+.tree ul { list-style: none; margin: 0; padding-left: 18px; border-left: 1px dotted var(--line); margin-left: 9px; }
+.tree > ul { border-left: 0; padding-left: 0; margin-left: 0; }
+.tree li { margin: 1px 0; }
+details > summary { list-style: none; cursor: pointer; }
+details > summary::-webkit-details-marker { display: none; }
+.row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; padding: 2px 4px; border-radius: 4px; }
+.caret { width: 14px; flex: none; color: var(--muted); font-size: 0.7rem; text-align: center; transition: transform .12s; }
+details[open] > summary .caret { transform: rotate(90deg); }
+@media (prefers-reduced-motion: reduce) { .caret { transition: none; } }
+.name { cursor: pointer; border-radius: 3px; padding: 0 2px; }
+.name.s { font-weight: 700; color: var(--structure); }
+.name.i { color: var(--fg); }
+.name.selected { background: var(--structure-soft); outline: 1px solid var(--structure); }
+.name.hit { background: var(--hit); }
+.chip { font-size: 0.7rem; padding: 0 6px; border-radius: 999px; line-height: 1.6; white-space: nowrap; }
+.chip.i { background: var(--issue-soft); color: var(--issue); }
+.chip.poly { background: var(--poly-soft); color: var(--poly); }
+.dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.detail {
+  position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px);
+  background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px; min-width: 0;
+}
+.detail h2 { font-family: var(--font-display); font-size: 1.25rem; margin: 0 0 2px; text-wrap: balance; }
+.detail .id { font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); word-break: break-all; }
+.detail dl { margin: 12px 0 0; display: grid; gap: 10px; }
+.detail dt { font-size: 0.72rem; letter-spacing: 0.08em; color: var(--muted); }
+.detail dd { margin: 2px 0 0; display: flex; flex-wrap: wrap; gap: 4px 6px; }
+.detail dd.memo { display: block; font-size: 0.9rem; }
+.link { color: var(--structure); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; background: none; border: 0; padding: 0; font-size: 0.9rem; }
+.tag { font-size: 0.85rem; background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 0 6px; }
+.none { color: var(--muted); font-size: 0.85rem; }
+.empty { color: var(--muted); padding: 8px; }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>憲法テーマ樹形図</h1>
+    <p id="stats"></p>
+    <div class="legend">
+      <span><b style="color:var(--structure)">太字の紺</b>＝構造エリア</span>
+      <span><span class="chip i">論点1</span>＝論点エリア（数字は段）</span>
+      <span><span class="chip poly">親2</span>＝親を複数持つ（それぞれの親の下に出てくる）</span>
+    </div>
+  </header>
+  <div class="toolbar">
+    <input id="q" type="search" placeholder="名前・エイリアス・ID で絞り込み" aria-label="絞り込み">
+    <button id="open-all" type="button">すべて開く</button>
+    <button id="close-issues" type="button">論点を閉じる</button>
+  </div>
+  <div class="main">
+    <nav class="tree" id="tree" aria-label="テーマの樹形図"></nav>
+    <aside class="detail" id="detail" aria-live="polite"></aside>
+  </div>
+</div>
+
+<script>
+const DATA = /*DATA*/[];
+const byId = Object.fromEntries(DATA.map(t => [t.id, t]));
+const children = {};
+DATA.forEach(t => (t.parents || []).forEach(p => (children[p] ||= []).push(t.id)));
+const relatedOf = id => {
+  const s = new Set(byId[id].related || []);
+  DATA.forEach(t => (t.related || []).includes(id) && s.add(t.id));
+  return [...s];
+};
+const issueLevel = id => {
+  const t = byId[id];
+  if (t.kind !== 'issue') return 0;
+  const p = (t.parents || [])[0];
+  return p && byId[p]?.kind === 'issue' ? issueLevel(p) + 1 : 1;
+};
+let selected = null;
+let query = '';
+
+const nS = DATA.filter(t => t.kind === 'structure').length;
+document.getElementById('stats').textContent =
+  `テーマ ${DATA.length} 件（構造 ${nS}・論点 ${DATA.length - nS}）／複数の親 ${DATA.filter(t => (t.parents || []).length > 1).length} 件`;
+
+const matches = t => !query || [t.name, t.id, ...(t.aliases || [])].some(s => s.toLowerCase().includes(query));
+const memo = {};
+const subtreeHit = id => {
+  if (id in memo) return memo[id];
+  memo[id] = false;
+  return (memo[id] = matches(byId[id]) || (children[id] || []).some(subtreeHit));
+};
+
+function rowHTML(t) {
+  const lvl = issueLevel(t.id);
+  const kind = t.kind === 'structure' ? 's' : 'i';
+  const np = (t.parents || []).length;
+  return `<span class="name ${kind}${t.id === selected ? ' selected' : ''}${query && matches(t) ? ' hit' : ''}" data-id="${t.id}" tabindex="0">${t.name}</span>`
+    + (lvl ? `<span class="chip i">論点${lvl}</span>` : '')
+    + (np > 1 ? `<span class="chip poly" title="親：${t.parents.map(p => byId[p]?.name).join('・')}">親${np}</span>` : '');
+}
+
+function nodeHTML(id) {
+  if (query && !subtreeHit(id)) return '';
+  const t = byId[id];
+  const kids = (children[id] || []).map(nodeHTML).join('');
+  if (!kids) return `<li><div class="row"><span class="caret"></span>${rowHTML(t)}</div></li>`;
+  return `<li><details open data-kind="${t.kind}"><summary><div class="row"><span class="caret">▶</span>${rowHTML(t)}</div></summary><ul>${kids}</ul></details></li>`;
+}
+
+function renderTree() {
+  for (const k in memo) delete memo[k];
+  const html = DATA.filter(t => !(t.parents || []).length).map(t => nodeHTML(t.id)).join('');
+  document.getElementById('tree').innerHTML = html ? `<ul>${html}</ul>` : '<p class="empty">見つかりません</p>';
+}
+
+const linkList = ids => ids.length
+  ? ids.map(i => `<button class="link" type="button" data-go="${i}">${byId[i]?.name ?? i}</button>`).join('')
+  : '<span class="none">なし</span>';
+
+function renderDetail() {
+  const el = document.getElementById('detail');
+  if (!selected) { el.innerHTML = '<p class="none">樹形図のテーマを選ぶと、親・子・エイリアス・関連・メモを表示します。</p>'; return; }
+  const t = byId[selected];
+  const lvl = issueLevel(t.id);
+  el.innerHTML = `
+    <h2>${t.name}</h2>
+    <div class="id">${t.id}</div>
+    <dl>
+      <div><dt>種類</dt><dd>${t.kind === 'structure' ? '構造エリア' : `論点エリア（第${lvl}段）`}</dd></div>
+      <div><dt>親</dt><dd>${linkList(t.parents || [])}</dd></div>
+      <div><dt>子</dt><dd>${linkList(children[t.id] || [])}</dd></div>
+      <div><dt>エイリアス</dt><dd>${(t.aliases || []).length ? t.aliases.map(a => `<span class="tag">${a}</span>`).join('') : '<span class="none">なし</span>'}</dd></div>
+      <div><dt>関連</dt><dd>${linkList(relatedOf(t.id))}</dd></div>
+      <div><dt>メモ</dt><dd class="memo">${t.memo || '<span class="none">なし</span>'}</dd></div>
+    </dl>`;
+}
+
+function select(id, scroll) {
+  selected = id;
+  renderTree();
+  renderDetail();
+  if (scroll) {
+    const el = document.querySelector(`#tree .name[data-id="${id}"]`);
+    el?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }
+}
+
+document.getElementById('tree').addEventListener('click', e => {
+  const n = e.target.closest('.name');
+  if (n) { e.preventDefault(); select(n.dataset.id); }
+});
+document.getElementById('tree').addEventListener('keydown', e => {
+  const n = e.target.closest('.name');
+  if (n && e.key === 'Enter') { e.preventDefault(); select(n.dataset.id); }
+});
+document.getElementById('detail').addEventListener('click', e => {
+  const g = e.target.closest('[data-go]');
+  if (g && byId[g.dataset.go]) {
+    if (query) { query = ''; document.getElementById('q').value = ''; }
+    select(g.dataset.go, true);
+  }
+});
+document.getElementById('q').addEventListener('input', e => { query = e.target.value.trim().toLowerCase(); renderTree(); });
+document.getElementById('open-all').addEventListener('click', () => document.querySelectorAll('#tree details').forEach(d => d.open = true));
+document.getElementById('close-issues').addEventListener('click', () => document.querySelectorAll('#tree details[data-kind="issue"]').forEach(d => d.open = false));
+
+renderTree();
+renderDetail();
+</script>

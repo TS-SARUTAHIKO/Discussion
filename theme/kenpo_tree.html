@@ -1,0 +1,224 @@
+<title>憲法テーマ樹形図</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@400&display=swap">
+<style>
+/* Layout: 左に樹形図、右に選んだテーマの詳細。狭い画面では縦に積む */
+:root {
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --fg: #1d2433;
+  --muted: #5d6677;
+  --line: #d9dde5;
+  --structure: #27408b;
+  --structure-soft: #e7ebf7;
+  --issue: #3d6b4f;
+  --issue-soft: #e5f0e9;
+  --poly: #9a5b00;
+  --poly-soft: #fbefd9;
+  --hit: #fff1a8;
+  --font-display: "Shippori Mincho B1", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --font-body: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12151c; --surface: #1a1f29; --fg: #e4e8ef; --muted: #9aa3b4; --line: #2e3542;
+    --structure: #9db2f0; --structure-soft: #232d48; --issue: #8fc7a4; --issue-soft: #1f3328;
+    --poly: #f0b860; --poly-soft: #3a2c14; --hit: #5a4b10; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12151c; --surface: #1a1f29; --fg: #e4e8ef; --muted: #9aa3b4; --line: #2e3542;
+  --structure: #9db2f0; --structure-soft: #232d48; --issue: #8fc7a4; --issue-soft: #1f3328;
+  --poly: #f0b860; --poly-soft: #3a2c14; --hit: #5a4b10; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px 40px;
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 16px; }
+header h1 { font-family: var(--font-display); font-size: 1.6rem; margin: 0; text-wrap: balance; }
+header p { margin: 4px 0 0; color: var(--muted); font-size: 0.88rem; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 0.82rem; color: var(--muted); margin-top: 8px; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.toolbar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.toolbar input {
+  flex: 1 1 220px; min-width: 0; font: inherit; padding: 8px 12px; border: 1px solid var(--line);
+  border-radius: 6px; background: var(--surface); color: var(--fg);
+}
+button {
+  font: inherit; font-size: 0.85rem; padding: 7px 12px; border: 1px solid var(--line); border-radius: 6px;
+  background: var(--surface); color: var(--fg); cursor: pointer;
+}
+button:hover { border-color: var(--structure); }
+:focus-visible { outline: 2px solid var(--structure); outline-offset: 2px; }
+.main { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 16px; align-items: start; }
+@media (max-width: 820px) { .main { grid-template-columns: minmax(0, 1fr); } .detail { position: static; order: -1; } }
+.tree { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px 8px; overflow-x: auto; }
+.tree ul { list-style: none; margin: 0; padding-left: 18px; border-left: 1px dotted var(--line); margin-left: 9px; }
+.tree > ul { border-left: 0; padding-left: 0; margin-left: 0; }
+.tree li { margin: 1px 0; }
+details > summary { list-style: none; cursor: pointer; }
+details > summary::-webkit-details-marker { display: none; }
+.row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; padding: 2px 4px; border-radius: 4px; }
+.caret { width: 14px; flex: none; color: var(--muted); font-size: 0.7rem; text-align: center; transition: transform .12s; }
+details[open] > summary .caret { transform: rotate(90deg); }
+@media (prefers-reduced-motion: reduce) { .caret { transition: none; } }
+.name { cursor: pointer; border-radius: 3px; padding: 0 2px; }
+.name.s { font-weight: 700; color: var(--structure); }
+.name.i { color: var(--fg); }
+.name.selected { background: var(--structure-soft); outline: 1px solid var(--structure); }
+.name.hit { background: var(--hit); }
+.chip { font-size: 0.7rem; padding: 0 6px; border-radius: 999px; line-height: 1.6; white-space: nowrap; }
+.chip.i { background: var(--issue-soft); color: var(--issue); }
+.chip.poly { background: var(--poly-soft); color: var(--poly); }
+.dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.detail {
+  position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px);
+  background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px; min-width: 0;
+}
+.detail h2 { font-family: var(--font-display); font-size: 1.25rem; margin: 0 0 2px; text-wrap: balance; }
+.detail .id { font-family: var(--font-mono); font-size: 0.78rem; color: var(--muted); word-break: break-all; }
+.detail dl { margin: 12px 0 0; display: grid; gap: 10px; }
+.detail dt { font-size: 0.72rem; letter-spacing: 0.08em; color: var(--muted); }
+.detail dd { margin: 2px 0 0; display: flex; flex-wrap: wrap; gap: 4px 6px; }
+.detail dd.memo { display: block; font-size: 0.9rem; }
+.link { color: var(--structure); text-decoration: underline; text-underline-offset: 2px; cursor: pointer; background: none; border: 0; padding: 0; font-size: 0.9rem; }
+.tag { font-size: 0.85rem; background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 0 6px; }
+.none { color: var(--muted); font-size: 0.85rem; }
+.empty { color: var(--muted); padding: 8px; }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>憲法テーマ樹形図</h1>
+    <p id="stats"></p>
+    <div class="legend">
+      <span><b style="color:var(--structure)">太字の紺</b>＝構造エリア</span>
+      <span><span class="chip i">論点1</span>＝論点エリア（数字は段）</span>
+      <span><span class="chip poly">親2</span>＝親を複数持つ（それぞれの親の下に出てくる）</span>
+    </div>
+  </header>
+  <div class="toolbar">
+    <input id="q" type="search" placeholder="名前・エイリアス・ID で絞り込み" aria-label="絞り込み">
+    <button id="open-all" type="button">すべて開く</button>
+    <button id="close-issues" type="button">論点を閉じる</button>
+  </div>
+  <div class="main">
+    <nav class="tree" id="tree" aria-label="テーマの樹形図"></nav>
+    <aside class="detail" id="detail" aria-live="polite"></aside>
+  </div>
+</div>
+
+<script>
+const DATA = [{"id": "kenpo", "name": "憲法", "kind": "structure", "parents": [], "aliases": [], "related": [], "memo": ""}, {"id": "kenpo-souron", "name": "憲法総論", "kind": "structure", "parents": ["kenpo"]}, {"id": "kenpo-kokumin-shuken", "name": "国民主権", "kind": "structure", "parents": ["kenpo-souron", "kenpo-tochi"], "memo": "基本書では総論（基本原理）に置くことが多いが、統治の原理でもある"}, {"id": "kenpo-heiwa-shugi", "name": "平和主義", "kind": "structure", "parents": ["kenpo-souron"]}, {"id": "kenpo-tennou", "name": "天皇", "kind": "structure", "parents": ["kenpo-souron", "kenpo-tochi"], "memo": "総論と統治の間に章を立てる本が多い。両方を親にした"}, {"id": "kenpo-jinken", "name": "人権", "kind": "structure", "parents": ["kenpo"], "aliases": ["基本的人権"], "memo": "「基本的人権」は日本国憲法の条文上の言い方で、指すものは同じとみてエイリアスにした"}, {"id": "kenpo-jinken-souron", "name": "人権総論", "kind": "structure", "parents": ["kenpo-jinken"]}, {"id": "kenpo-jinken-kakuron", "name": "人権各論", "kind": "structure", "parents": ["kenpo-jinken"]}, {"id": "kenpo-houkatsuteki-kihonken", "name": "包括的基本権", "kind": "structure", "parents": ["kenpo-jinken-souron", "kenpo-jinken-kakuron"], "memo": "13条。法の下の平等と同じく総論・各論の間にある"}, {"id": "kenpo-hou-no-moto-no-byoudou", "name": "法の下の平等", "kind": "structure", "parents": ["kenpo-jinken-souron", "kenpo-jinken-kakuron"], "memo": "総論と各論の間にある。各論に置くほうが一般的。「平等権」「平等原則」はエイリアスにしない（メモ参照）"}, {"id": "kenpo-jiyuuken", "name": "自由権", "kind": "structure", "parents": ["kenpo-jinken-kakuron"]}, {"id": "kenpo-seishinteki-jiyuu", "name": "精神的自由", "kind": "structure", "parents": ["kenpo-jiyuuken"], "aliases": ["精神的自由権"]}, {"id": "kenpo-shisou-ryoushin-no-jiyuu", "name": "思想・良心の自由", "kind": "structure", "parents": ["kenpo-seishinteki-jiyuu"], "aliases": ["思想及び良心の自由"]}, {"id": "kenpo-shinkyou-no-jiyuu", "name": "信教の自由", "kind": "structure", "parents": ["kenpo-seishinteki-jiyuu"]}, {"id": "kenpo-seikyou-bunri", "name": "政教分離", "kind": "structure", "parents": ["kenpo-shinkyou-no-jiyuu", "kenpo-zaisei"], "aliases": ["政教分離原則"], "memo": "20条（信教の自由の章）と89条（財政）の両方にまたがる"}, {"id": "kenpo-hyougen-no-jiyuu", "name": "表現の自由", "kind": "structure", "parents": ["kenpo-seishinteki-jiyuu"]}, {"id": "kenpo-shuukai-kessha-no-jiyuu", "name": "集会・結社の自由", "kind": "structure", "parents": ["kenpo-hyougen-no-jiyuu"], "memo": "21条1項。表現の自由の章で扱う本が多いので子にした。精神的自由の直下に並べる案もある"}, {"id": "kenpo-gakumon-no-jiyuu", "name": "学問の自由", "kind": "structure", "parents": ["kenpo-seishinteki-jiyuu"]}, {"id": "kenpo-keizaiteki-jiyuu", "name": "経済的自由", "kind": "structure", "parents": ["kenpo-jiyuuken"], "aliases": ["経済的自由権"]}, {"id": "kenpo-shokugyou-sentaku-no-jiyuu", "name": "職業選択の自由", "kind": "structure", "parents": ["kenpo-keizaiteki-jiyuu"]}, {"id": "kenpo-kyojuu-iten-no-jiyuu", "name": "居住・移転の自由", "kind": "structure", "parents": ["kenpo-keizaiteki-jiyuu"], "memo": "人身の自由・精神的自由の面もあるとされるが、22条の並びに合わせて経済的自由に置いた"}, {"id": "kenpo-zaisanken", "name": "財産権", "kind": "structure", "parents": ["kenpo-keizaiteki-jiyuu"]}, {"id": "kenpo-jinshin-no-jiyuu", "name": "人身の自由", "kind": "structure", "parents": ["kenpo-jiyuuken"]}, {"id": "kenpo-tekisei-tetsuzuki", "name": "適正手続", "kind": "structure", "parents": ["kenpo-jinshin-no-jiyuu"], "aliases": ["適正手続の保障"], "memo": "31条"}, {"id": "kenpo-higisha-hikokunin-no-kenri", "name": "被疑者・被告人の権利", "kind": "structure", "parents": ["kenpo-jinshin-no-jiyuu"], "memo": "33条〜39条。刑事訴訟法を作るときに、刑訴側の構造からも親にする見込み"}, {"id": "kenpo-sanseiken", "name": "参政権", "kind": "structure", "parents": ["kenpo-jinken-kakuron"]}, {"id": "kenpo-kokumu-seikyuuken", "name": "国務請求権", "kind": "structure", "parents": ["kenpo-jinken-kakuron"], "aliases": ["受益権"], "memo": "「受益権」は同じ分類の別の呼び名とみてエイリアスにした。人の確認が必要（メモ参照）"}, {"id": "kenpo-shakaiken", "name": "社会権", "kind": "structure", "parents": ["kenpo-jinken-kakuron"]}, {"id": "kenpo-seizonken", "name": "生存権", "kind": "structure", "parents": ["kenpo-shakaiken"]}, {"id": "kenpo-kyouiku-wo-ukeru-kenri", "name": "教育を受ける権利", "kind": "structure", "parents": ["kenpo-shakaiken"]}, {"id": "kenpo-roudou-kihonken", "name": "労働基本権", "kind": "structure", "parents": ["kenpo-shakaiken"]}, {"id": "kenpo-tochi", "name": "統治", "kind": "structure", "parents": ["kenpo"], "aliases": ["統治機構"]}, {"id": "kenpo-kenryoku-bunritsu", "name": "権力分立", "kind": "structure", "parents": ["kenpo-tochi"]}, {"id": "kenpo-kokkai", "name": "国会", "kind": "structure", "parents": ["kenpo-tochi"]}, {"id": "kenpo-naikaku", "name": "内閣", "kind": "structure", "parents": ["kenpo-tochi"]}, {"id": "kenpo-shihou", "name": "司法", "kind": "structure", "parents": ["kenpo-tochi"], "memo": "基本書の章名は「裁判所」が多い。民事訴訟法の「裁判所」（管轄など）とぶつかるので「司法」にした（メモ参照）"}, {"id": "kenpo-zaisei", "name": "財政", "kind": "structure", "parents": ["kenpo-tochi"]}, {"id": "chihou-jichi", "name": "地方自治", "kind": "structure", "parents": ["kenpo-tochi"], "memo": "行政法（地方自治法）と共有する見込みなので、ID に科目の接頭辞を付けていない"}, {"id": "kenpo-kenpou-hoshou", "name": "憲法保障", "kind": "structure", "parents": ["kenpo"], "aliases": ["憲法の保障"]}, {"id": "kenpo-kenpou-soshou", "name": "憲法訴訟", "kind": "structure", "parents": ["kenpo-kenpou-hoshou", "kenpo-shihou"], "memo": "違憲審査制は司法の章で扱う本と、憲法保障の章で扱う本がある。両方を親にした"}, {"id": "kenpo-kenpou-kaisei", "name": "憲法改正", "kind": "structure", "parents": ["kenpo-kenpou-hoshou"]}, {"id": "jinken-kyouyuu-shutaisei", "name": "人権の享有主体性", "kind": "issue", "parents": ["kenpo-jinken-souron"], "aliases": ["人権享有主体性", "人権の享有主体"]}, {"id": "gaikokujin-no-jinken", "name": "外国人の人権", "kind": "issue", "parents": ["jinken-kyouyuu-shutaisei"]}, {"id": "gaikokujin-no-senkyoken", "name": "外国人の選挙権", "kind": "issue", "parents": ["gaikokujin-no-jinken"], "related": ["kenpo-sanseiken"]}, {"id": "gaikokujin-no-seiji-katsudou-no-jiyuu", "name": "外国人の政治活動の自由", "kind": "issue", "parents": ["gaikokujin-no-jinken"]}, {"id": "houjin-no-jinken", "name": "法人の人権", "kind": "issue", "parents": ["jinken-kyouyuu-shutaisei"]}, {"id": "jinken-no-shijinkan-kouryoku", "name": "人権の私人間効力", "kind": "issue", "parents": ["kenpo-jinken-souron"], "aliases": ["私人間効力", "人権規定の私人間効力"]}, {"id": "shijinkan-kouryoku-mukouryoku-setsu", "name": "無効力説（私人間効力）", "kind": "issue", "parents": ["jinken-no-shijinkan-kouryoku"]}, {"id": "shijinkan-kouryoku-chokusetsu-tekiyou-setsu", "name": "直接適用説（私人間効力）", "kind": "issue", "parents": ["jinken-no-shijinkan-kouryoku"]}, {"id": "shijinkan-kouryoku-kansetsu-tekiyou-setsu", "name": "間接適用説（私人間効力）", "kind": "issue", "parents": ["jinken-no-shijinkan-kouryoku"]}, {"id": "koukyou-no-fukushi", "name": "公共の福祉", "kind": "issue", "parents": ["kenpo-jinken-souron"], "memo": "「人権相互の矛盾・衝突を調整する原理」はエイリアスにしない（一元的内在制約説という一つの立場のため）"}, {"id": "ichigenteki-gaizai-seiyaku-setsu", "name": "一元的外在制約説", "kind": "issue", "parents": ["koukyou-no-fukushi"]}, {"id": "naizai-gaizai-nigenteki-seiyaku-setsu", "name": "内在・外在二元的制約説", "kind": "issue", "parents": ["koukyou-no-fukushi"]}, {"id": "ichigenteki-naizai-seiyaku-setsu", "name": "一元的内在制約説", "kind": "issue", "parents": ["koukyou-no-fukushi"]}, {"id": "tokubetsu-na-houritsu-kankei-ni-okeru-jinken", "name": "特別な法律関係における人権", "kind": "issue", "parents": ["kenpo-jinken-souron"], "memo": "「特別権力関係」はエイリアスにしない。特別権力関係論という一つの理論で、今は否定的に扱われる"}, {"id": "tokubetsu-kenryoku-kankei-ron", "name": "特別権力関係論", "kind": "issue", "parents": ["tokubetsu-na-houritsu-kankei-ni-okeru-jinken"]}, {"id": "koumuin-no-jinken", "name": "公務員の人権", "kind": "issue", "parents": ["tokubetsu-na-houritsu-kankei-ni-okeru-jinken"]}, {"id": "hishuuyousha-no-jinken", "name": "刑事収容施設被収容者の人権", "kind": "issue", "parents": ["tokubetsu-na-houritsu-kankei-ni-okeru-jinken"], "aliases": ["在監者の人権", "被収容者の人権"], "memo": "古い本では「在監者の人権」。法律の名前が変わった結果の呼び名の違いなのでエイリアスにしてよいか、人が確認"}, {"id": "seidoteki-hoshou", "name": "制度的保障", "kind": "issue", "parents": ["kenpo-jinken-souron", "kenpo-seikyou-bunri"], "memo": "理論そのものは人権総論、典型的に問われるのは政教分離・大学の自治。第1段なので両方を親にした", "related": ["daigaku-no-jichi"]}, {"id": "koufuku-tsuikyuuken", "name": "幸福追求権", "kind": "issue", "parents": ["kenpo-houkatsuteki-kihonken"]}, {"id": "puraibashii-ken", "name": "プライバシー権", "kind": "issue", "parents": ["kenpo-houkatsuteki-kihonken"], "aliases": ["プライバシーの権利"]}, {"id": "jiko-jouhou-control-ken", "name": "自己情報コントロール権", "kind": "issue", "parents": ["puraibashii-ken"], "memo": "プライバシー権の一つの捉え方なので、エイリアスではなく子の論点にした"}, {"id": "jiko-kettei-ken", "name": "自己決定権", "kind": "issue", "parents": ["kenpo-houkatsuteki-kihonken"]}, {"id": "byoudou-kouhan-rekkyo-jiyuu", "name": "14条1項後段列挙事由", "kind": "issue", "parents": ["kenpo-hou-no-moto-no-byoudou"]}, {"id": "giin-teisuu-fukinkou", "name": "議員定数不均衡", "kind": "issue", "parents": ["kenpo-hou-no-moto-no-byoudou", "kenpo-sanseiken"], "aliases": ["定数不均衡", "一票の較差", "一票の格差"], "memo": "平等と選挙権の両方から問われる。「一票の較差」を言い換えとしてよいかは人が確認（メモ参照）"}, {"id": "chinmoku-no-jiyuu", "name": "沈黙の自由", "kind": "issue", "parents": ["kenpo-shisou-ryoushin-no-jiyuu"]}, {"id": "mokuteki-kouka-kijun", "name": "目的効果基準", "kind": "issue", "parents": ["kenpo-seikyou-bunri"]}, {"id": "shiru-kenri", "name": "知る権利", "kind": "issue", "parents": ["kenpo-hyougen-no-jiyuu"]}, {"id": "houdou-no-jiyuu", "name": "報道の自由", "kind": "issue", "parents": ["kenpo-hyougen-no-jiyuu"]}, {"id": "shuzai-no-jiyuu", "name": "取材の自由", "kind": "issue", "parents": ["houdou-no-jiyuu"]}, {"id": "ken-etsu-no-kinshi", "name": "検閲の禁止", "kind": "issue", "parents": ["kenpo-hyougen-no-jiyuu"], "related": ["jizen-yokusei-no-gensokuteki-kinshi"]}, {"id": "jizen-yokusei-no-gensokuteki-kinshi", "name": "事前抑制の原則的禁止", "kind": "issue", "parents": ["kenpo-hyougen-no-jiyuu"]}, {"id": "meikakusei-no-gensoku", "name": "明確性の原則", "kind": "issue", "parents": ["kenpo-hyougen-no-jiyuu", "kenpo-tekisei-tetsuzuki"], "memo": "表現規制の明確性（21条）と刑罰法規の明確性（31条）の両方で問われる。分けるべきかは人が判断", "aliases": ["明確性の理論"]}, {"id": "hyougen-naiyou-kisei-to-naiyou-chuuritsu-kisei", "name": "表現内容規制と表現内容中立規制", "kind": "issue", "parents": ["kenpo-hyougen-no-jiyuu"]}, {"id": "daigaku-no-jichi", "name": "大学の自治", "kind": "issue", "parents": ["kenpo-gakumon-no-jiyuu"]}, {"id": "eigyou-no-jiyuu", "name": "営業の自由", "kind": "issue", "parents": ["kenpo-shokugyou-sentaku-no-jiyuu"]}, {"id": "kisei-mokuteki-nibunron", "name": "規制目的二分論", "kind": "issue", "parents": ["kenpo-shokugyou-sentaku-no-jiyuu", "kenpo-zaisanken"], "aliases": ["目的二分論"], "related": ["eigyou-no-jiyuu", "nijuu-no-kijun-ron"], "memo": "主に職業選択の自由で問われるが、森林法判決の関係で財産権からも問われる"}, {"id": "kaigai-tokou-no-jiyuu", "name": "海外渡航の自由", "kind": "issue", "parents": ["kenpo-kyojuu-iten-no-jiyuu"]}, {"id": "sonshitsu-hoshou-no-youhi", "name": "損失補償の要否", "kind": "issue", "parents": ["kenpo-zaisanken"], "memo": "29条3項。行政法の損失補償と共有する見込み"}, {"id": "seitou-na-hoshou-no-imi", "name": "「正当な補償」の意味", "kind": "issue", "parents": ["kenpo-zaisanken"]}, {"id": "kanzen-hoshou-setsu", "name": "完全補償説", "kind": "issue", "parents": ["seitou-na-hoshou-no-imi"]}, {"id": "soutou-hoshou-setsu", "name": "相当補償説", "kind": "issue", "parents": ["seitou-na-hoshou-no-imi"]}, {"id": "jourei-ni-yoru-zaisanken-kisei", "name": "条例による財産権の規制", "kind": "issue", "parents": ["kenpo-zaisanken", "chihou-jichi"]}, {"id": "gyousei-tetsuzuki-to-31-jou", "name": "行政手続と31条", "kind": "issue", "parents": ["kenpo-tekisei-tetsuzuki"], "memo": "行政法を作るときに、行政手続の構造からも親にする見込み"}, {"id": "kokuchi-to-choumon", "name": "告知と聴聞", "kind": "issue", "parents": ["kenpo-tekisei-tetsuzuki"]}, {"id": "reijou-shugi", "name": "令状主義", "kind": "issue", "parents": ["kenpo-higisha-hikokunin-no-kenri"], "memo": "刑事訴訟法では構造エリアに上げたほうがよいかもしれない（メモ参照）"}, {"id": "gyousei-chousa-to-reijou-shugi", "name": "行政調査と令状主義", "kind": "issue", "parents": ["reijou-shugi"]}, {"id": "jiko-fusai-kyohi-tokken", "name": "自己負罪拒否特権", "kind": "issue", "parents": ["kenpo-higisha-hikokunin-no-kenri"], "memo": "刑訴の「黙秘権」とは保障の範囲が違うので、エイリアスにせず別テーマ＋関連でつなぐ予定"}, {"id": "ichiji-fusairi", "name": "一事不再理", "kind": "issue", "parents": ["kenpo-higisha-hikokunin-no-kenri"], "related": ["nijuu-no-kiken"], "memo": "39条の読み方には「一事不再理」「二重処罰の禁止」「二重の危険」の立場があり、言い換えではない"}, {"id": "nijuu-no-kiken", "name": "二重の危険", "kind": "issue", "parents": ["kenpo-higisha-hikokunin-no-kenri"]}, {"id": "senkyoken-no-houteki-seikaku", "name": "選挙権の法的性格", "kind": "issue", "parents": ["kenpo-sanseiken"]}, {"id": "senkyoken-kenri-ichigen-setsu", "name": "権利一元説（選挙権）", "kind": "issue", "parents": ["senkyoken-no-houteki-seikaku"]}, {"id": "senkyoken-nigen-setsu", "name": "二元説（選挙権）", "kind": "issue", "parents": ["senkyoken-no-houteki-seikaku"]}, {"id": "zaigai-kokumin-no-senkyoken", "name": "在外国民の選挙権", "kind": "issue", "parents": ["kenpo-sanseiken"]}, {"id": "kokka-baishou-seikyuuken", "name": "国家賠償請求権", "kind": "issue", "parents": ["kenpo-kokumu-seikyuuken"], "memo": "17条。行政法の国家賠償と関連でつなぐ予定"}, {"id": "saiban-wo-ukeru-kenri", "name": "裁判を受ける権利", "kind": "issue", "parents": ["kenpo-kokumu-seikyuuken", "kenpo-shihou"]}, {"id": "seizonken-no-houteki-seikaku", "name": "生存権の法的性格", "kind": "issue", "parents": ["kenpo-seizonken"]}, {"id": "program-kitei-setsu", "name": "プログラム規定説", "kind": "issue", "parents": ["seizonken-no-houteki-seikaku"]}, {"id": "chuushouteki-kenri-setsu", "name": "抽象的権利説", "kind": "issue", "parents": ["seizonken-no-houteki-seikaku"]}, {"id": "gutaiteki-kenri-setsu", "name": "具体的権利説", "kind": "issue", "parents": ["seizonken-no-houteki-seikaku"]}, {"id": "kyouikuken-no-shozai", "name": "教育権の所在", "kind": "issue", "parents": ["kenpo-kyouiku-wo-ukeru-kenri"]}, {"id": "koumuin-no-roudou-kihonken", "name": "公務員の労働基本権", "kind": "issue", "parents": ["kenpo-roudou-kihonken"], "related": ["koumuin-no-jinken"]}, {"id": "kokumin-shuken-no-imi", "name": "国民主権の意味", "kind": "issue", "parents": ["kenpo-kokumin-shuken"]}, {"id": "senryoku-no-imi", "name": "「戦力」の意味", "kind": "issue", "parents": ["kenpo-heiwa-shugi"]}, {"id": "jieiken", "name": "自衛権", "kind": "issue", "parents": ["kenpo-heiwa-shugi"]}, {"id": "tennou-no-kokuji-koui", "name": "天皇の国事行為", "kind": "issue", "parents": ["kenpo-tennou"]}, {"id": "yuiitsu-no-rippou-kikan", "name": "唯一の立法機関", "kind": "issue", "parents": ["kenpo-kokkai"]}, {"id": "kokkai-chuushin-rippou-no-gensoku", "name": "国会中心立法の原則", "kind": "issue", "parents": ["yuiitsu-no-rippou-kikan"]}, {"id": "kokkai-tandoku-rippou-no-gensoku", "name": "国会単独立法の原則", "kind": "issue", "parents": ["yuiitsu-no-rippou-kikan"]}, {"id": "inin-rippou", "name": "委任立法", "kind": "issue", "parents": ["kenpo-kokkai", "kenpo-naikaku"]}, {"id": "kokusei-chousaken", "name": "国政調査権", "kind": "issue", "parents": ["kenpo-kokkai"]}, {"id": "giin-no-tokken", "name": "国会議員の特権", "kind": "issue", "parents": ["kenpo-kokkai"]}, {"id": "menseki-tokken", "name": "免責特権", "kind": "issue", "parents": ["giin-no-tokken"]}, {"id": "futaiho-tokken", "name": "不逮捕特権", "kind": "issue", "parents": ["giin-no-tokken"]}, {"id": "shuugiin-no-yuuetsu", "name": "衆議院の優越", "kind": "issue", "parents": ["kenpo-kokkai"]}, {"id": "gyouseiken-no-imi", "name": "行政権の意味", "kind": "issue", "parents": ["kenpo-naikaku"]}, {"id": "koujo-setsu", "name": "控除説", "kind": "issue", "parents": ["gyouseiken-no-imi"]}, {"id": "giin-naikakusei", "name": "議院内閣制", "kind": "issue", "parents": ["kenpo-naikaku", "kenpo-kenryoku-bunritsu"]}, {"id": "shuugiin-no-kaisan", "name": "衆議院の解散", "kind": "issue", "parents": ["kenpo-naikaku", "kenpo-kokkai"]}, {"id": "dokuritsu-gyousei-iinkai", "name": "独立行政委員会", "kind": "issue", "parents": ["kenpo-naikaku", "kenpo-kenryoku-bunritsu"]}, {"id": "shihouken-no-imi", "name": "司法権の意味", "kind": "issue", "parents": ["kenpo-shihou"]}, {"id": "houritsujou-no-soushou", "name": "法律上の争訟", "kind": "issue", "parents": ["shihouken-no-imi"]}, {"id": "shihouken-no-genkai", "name": "司法権の限界", "kind": "issue", "parents": ["kenpo-shihou"]}, {"id": "touchi-koui", "name": "統治行為", "kind": "issue", "parents": ["shihouken-no-genkai"], "aliases": ["統治行為論"], "memo": "「統治行為」と「統治行為論」は、概念と理論の違いはあるが試験では同じ論点として扱われるのでエイリアスにした。人の確認が必要"}, {"id": "bubun-shakai-no-houri", "name": "部分社会の法理", "kind": "issue", "parents": ["shihouken-no-genkai"], "aliases": ["部分社会論"]}, {"id": "shihouken-no-dokuritsu", "name": "司法権の独立", "kind": "issue", "parents": ["kenpo-shihou"]}, {"id": "saiban-no-koukai", "name": "裁判の公開", "kind": "issue", "parents": ["kenpo-shihou"]}, {"id": "iken-shinsasei-no-seikaku", "name": "違憲審査制の性格", "kind": "issue", "parents": ["kenpo-kenpou-soshou"]}, {"id": "fuzuiteki-shinsasei", "name": "付随的審査制", "kind": "issue", "parents": ["iken-shinsasei-no-seikaku"]}, {"id": "iken-hanketsu-no-kouryoku", "name": "違憲判決の効力", "kind": "issue", "parents": ["kenpo-kenpou-soshou"]}, {"id": "nijuu-no-kijun-ron", "name": "二重の基準論", "kind": "issue", "parents": ["kenpo-kenpou-soshou", "kenpo-jinken-souron"], "aliases": ["二重の基準", "二重の基準の理論"], "memo": "審査基準論は人権総論で教える本が増えている。両方を親にした"}, {"id": "goken-gentei-kaishaku", "name": "合憲限定解釈", "kind": "issue", "parents": ["kenpo-kenpou-soshou"]}, {"id": "rippou-fusakui", "name": "立法不作為の違憲性", "kind": "issue", "parents": ["kenpo-kenpou-soshou"], "related": ["kokka-baishou-seikyuuken"]}, {"id": "sozei-houritsu-shugi", "name": "租税法律主義", "kind": "issue", "parents": ["kenpo-zaisei"]}, {"id": "koukin-shishutsu-no-seigen", "name": "公金支出の制限", "kind": "issue", "parents": ["kenpo-zaisei"], "memo": "89条。前段は政教分離、後段は公の支配の問題", "related": ["kenpo-seikyou-bunri"]}, {"id": "yosan-no-houteki-seikaku", "name": "予算の法的性格", "kind": "issue", "parents": ["kenpo-zaisei"]}, {"id": "chihou-jichi-no-honshi", "name": "地方自治の本旨", "kind": "issue", "parents": ["chihou-jichi"]}, {"id": "jourei-seiteiken-no-han-i", "name": "条例制定権の範囲", "kind": "issue", "parents": ["chihou-jichi"]}, {"id": "kenpou-kaisei-no-genkai", "name": "憲法改正の限界", "kind": "issue", "parents": ["kenpo-kenpou-kaisei"]}];
+const byId = Object.fromEntries(DATA.map(t => [t.id, t]));
+const children = {};
+DATA.forEach(t => (t.parents || []).forEach(p => (children[p] ||= []).push(t.id)));
+const relatedOf = id => {
+  const s = new Set(byId[id].related || []);
+  DATA.forEach(t => (t.related || []).includes(id) && s.add(t.id));
+  return [...s];
+};
+const issueLevel = id => {
+  const t = byId[id];
+  if (t.kind !== 'issue') return 0;
+  const p = (t.parents || [])[0];
+  return p && byId[p]?.kind === 'issue' ? issueLevel(p) + 1 : 1;
+};
+let selected = null;
+let query = '';
+
+const nS = DATA.filter(t => t.kind === 'structure').length;
+document.getElementById('stats').textContent =
+  `テーマ ${DATA.length} 件（構造 ${nS}・論点 ${DATA.length - nS}）／複数の親 ${DATA.filter(t => (t.parents || []).length > 1).length} 件`;
+
+const matches = t => !query || [t.name, t.id, ...(t.aliases || [])].some(s => s.toLowerCase().includes(query));
+const memo = {};
+const subtreeHit = id => {
+  if (id in memo) return memo[id];
+  memo[id] = false;
+  return (memo[id] = matches(byId[id]) || (children[id] || []).some(subtreeHit));
+};
+
+function rowHTML(t) {
+  const lvl = issueLevel(t.id);
+  const kind = t.kind === 'structure' ? 's' : 'i';
+  const np = (t.parents || []).length;
+  return `<span class="name ${kind}${t.id === selected ? ' selected' : ''}${query && matches(t) ? ' hit' : ''}" data-id="${t.id}" tabindex="0">${t.name}</span>`
+    + (lvl ? `<span class="chip i">論点${lvl}</span>` : '')
+    + (np > 1 ? `<span class="chip poly" title="親：${t.parents.map(p => byId[p]?.name).join('・')}">親${np}</span>` : '');
+}
+
+function nodeHTML(id) {
+  if (query && !subtreeHit(id)) return '';
+  const t = byId[id];
+  const kids = (children[id] || []).map(nodeHTML).join('');
+  if (!kids) return `<li><div class="row"><span class="caret"></span>${rowHTML(t)}</div></li>`;
+  return `<li><details open data-kind="${t.kind}"><summary><div class="row"><span class="caret">▶</span>${rowHTML(t)}</div></summary><ul>${kids}</ul></details></li>`;
+}
+
+function renderTree() {
+  for (const k in memo) delete memo[k];
+  const html = DATA.filter(t => !(t.parents || []).length).map(t => nodeHTML(t.id)).join('');
+  document.getElementById('tree').innerHTML = html ? `<ul>${html}</ul>` : '<p class="empty">見つかりません</p>';
+}
+
+const linkList = ids => ids.length
+  ? ids.map(i => `<button class="link" type="button" data-go="${i}">${byId[i]?.name ?? i}</button>`).join('')
+  : '<span class="none">なし</span>';
+
+function renderDetail() {
+  const el = document.getElementById('detail');
+  if (!selected) { el.innerHTML = '<p class="none">樹形図のテーマを選ぶと、親・子・エイリアス・関連・メモを表示します。</p>'; return; }
+  const t = byId[selected];
+  const lvl = issueLevel(t.id);
+  el.innerHTML = `
+    <h2>${t.name}</h2>
+    <div class="id">${t.id}</div>
+    <dl>
+      <div><dt>種類</dt><dd>${t.kind === 'structure' ? '構造エリア' : `論点エリア（第${lvl}段）`}</dd></div>
+      <div><dt>親</dt><dd>${linkList(t.parents || [])}</dd></div>
+      <div><dt>子</dt><dd>${linkList(children[t.id] || [])}</dd></div>
+      <div><dt>エイリアス</dt><dd>${(t.aliases || []).length ? t.aliases.map(a => `<span class="tag">${a}</span>`).join('') : '<span class="none">なし</span>'}</dd></div>
+      <div><dt>関連</dt><dd>${linkList(relatedOf(t.id))}</dd></div>
+      <div><dt>メモ</dt><dd class="memo">${t.memo || '<span class="none">なし</span>'}</dd></div>
+    </dl>`;
+}
+
+function select(id, scroll) {
+  selected = id;
+  renderTree();
+  renderDetail();
+  if (scroll) {
+    const el = document.querySelector(`#tree .name[data-id="${id}"]`);
+    el?.scrollIntoView({ block: 'center', behavior: 'smooth' });
+  }
+}
+
+document.getElementById('tree').addEventListener('click', e => {
+  const n = e.target.closest('.name');
+  if (n) { e.preventDefault(); select(n.dataset.id); }
+});
+document.getElementById('tree').addEventListener('keydown', e => {
+  const n = e.target.closest('.name');
+  if (n && e.key === 'Enter') { e.preventDefault(); select(n.dataset.id); }
+});
+document.getElementById('detail').addEventListener('click', e => {
+  const g = e.target.closest('[data-go]');
+  if (g && byId[g.dataset.go]) {
+    if (query) { query = ''; document.getElementById('q').value = ''; }
+    select(g.dataset.go, true);
+  }
+});
+document.getElementById('q').addEventListener('input', e => { query = e.target.value.trim().toLowerCase(); renderTree(); });
+document.getElementById('open-all').addEventListener('click', () => document.querySelectorAll('#tree details').forEach(d => d.open = true));
+document.getElementById('close-issues').addEventListener('click', () => document.querySelectorAll('#tree details[data-kind="issue"]').forEach(d => d.open = false));
+
+renderTree();
+renderDetail();
+</script>
