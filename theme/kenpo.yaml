@@ -4,6 +4,7 @@
 # - kind: structure（構造エリア）／ issue（論点エリア）
 # - 構造エリアと論点の第1段は親を複数持てる。論点の第2・3段は親（論点）を1つだけ持つ
 # - 論点エリアは最大3段
+# - kind: theory（学説）は論点の子として1段使うが、論点の「最大3段」には数えない。ページでは「学説」のグループにまとめて出す
 # - 書いていない項目（aliases / related / memo）は空とみなす
 # - related は向きを持たないので、片側にだけ書く
 # - 構造エリアの ID は科目の接頭辞（kenpo-）を付ける。論点の ID は接頭辞なし
@@ -297,17 +298,17 @@
 
 - id: shijinkan-kouryoku-mukouryoku-setsu
   name: 無効力説（私人間効力）
-  kind: issue
+  kind: theory
   parents: [jinken-no-shijinkan-kouryoku]
 
 - id: shijinkan-kouryoku-chokusetsu-tekiyou-setsu
   name: 直接適用説（私人間効力）
-  kind: issue
+  kind: theory
   parents: [jinken-no-shijinkan-kouryoku]
 
 - id: shijinkan-kouryoku-kansetsu-tekiyou-setsu
   name: 間接適用説（私人間効力）
-  kind: issue
+  kind: theory
   parents: [jinken-no-shijinkan-kouryoku]
 
 - id: koukyou-no-fukushi
@@ -318,17 +319,17 @@
 
 - id: ichigenteki-gaizai-seiyaku-setsu
   name: 一元的外在制約説
-  kind: issue
+  kind: theory
   parents: [koukyou-no-fukushi]
 
 - id: naizai-gaizai-nigenteki-seiyaku-setsu
   name: 内在・外在二元的制約説
-  kind: issue
+  kind: theory
   parents: [koukyou-no-fukushi]
 
 - id: ichigenteki-naizai-seiyaku-setsu
   name: 一元的内在制約説
-  kind: issue
+  kind: theory
   parents: [koukyou-no-fukushi]
 
 - id: tokubetsu-na-houritsu-kankei-ni-okeru-jinken
@@ -339,7 +340,7 @@
 
 - id: tokubetsu-kenryoku-kankei-ron
   name: 特別権力関係論
-  kind: issue
+  kind: theory
   parents: [tokubetsu-na-houritsu-kankei-ni-okeru-jinken]
 
 - id: koumuin-no-jinken
@@ -376,7 +377,7 @@
 
 - id: jiko-jouhou-control-ken
   name: 自己情報コントロール権
-  kind: issue
+  kind: theory
   parents: [puraibashii-ken]
   memo: プライバシー権の一つの捉え方なので、エイリアスではなく子の論点にした
 
@@ -487,12 +488,12 @@
 
 - id: kanzen-hoshou-setsu
   name: 完全補償説
-  kind: issue
+  kind: theory
   parents: [seitou-na-hoshou-no-imi]
 
 - id: soutou-hoshou-setsu
   name: 相当補償説
-  kind: issue
+  kind: theory
   parents: [seitou-na-hoshou-no-imi]
 
 - id: jourei-ni-yoru-zaisanken-kisei
@@ -551,12 +552,12 @@
 
 - id: senkyoken-kenri-ichigen-setsu
   name: 権利一元説（選挙権）
-  kind: issue
+  kind: theory
   parents: [senkyoken-no-houteki-seikaku]
 
 - id: senkyoken-nigen-setsu
   name: 二元説（選挙権）
-  kind: issue
+  kind: theory
   parents: [senkyoken-no-houteki-seikaku]
 
 - id: zaigai-kokumin-no-senkyoken
@@ -584,17 +585,17 @@
 
 - id: program-kitei-setsu
   name: プログラム規定説
-  kind: issue
+  kind: theory
   parents: [seizonken-no-houteki-seikaku]
 
 - id: chuushouteki-kenri-setsu
   name: 抽象的権利説
-  kind: issue
+  kind: theory
   parents: [seizonken-no-houteki-seikaku]
 
 - id: gutaiteki-kenri-setsu
   name: 具体的権利説
-  kind: issue
+  kind: theory
   parents: [seizonken-no-houteki-seikaku]
 
 - id: kyouikuken-no-shozai
@@ -684,7 +685,7 @@
 
 - id: koujo-setsu
   name: 控除説
-  kind: issue
+  kind: theory
   parents: [gyouseiken-no-imi]
 
 - id: giin-naikakusei

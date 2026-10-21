@@ -6,6 +6,8 @@
 # - next は親子関係とは別のもの。タグ付けと集計は今までどおり親子関係（樹形図）で行う
 # - 手続の流れに乗らない枠（基本原則・訴訟主体・証拠）には next を書かない
 # - related は向きを持たないので片側にだけ書く。憲法・刑法のテーマとの関連もこちら側に書いた
+# - kind: theory（学説）は論点の子として1段使うが、論点の「最大3段」には数えない。ページでは「学説」のグループにまとめて出す
+# - ref の行は、ほかの科目のテーマをこの科目の構造にも目印付きで出すための参照（所属は元の科目のまま）。ファイルの最後にまとめた
 # 迷った点・決めきれなかった点は keiso_memo.md にまとめている。
 
 # ============================================================
@@ -488,12 +490,12 @@
 
 - id: soin-taishou-setsu
   name: 訴因対象説
-  kind: issue
+  kind: theory
   parents: [shinpan-taishou]
 
 - id: kouso-jijitsu-taishou-setsu
   name: 公訴事実対象説
-  kind: issue
+  kind: theory
   parents: [shinpan-taishou]
 
 - id: soin-no-tokutei
@@ -591,17 +593,17 @@
 
 - id: kyogi-haijo-setsu
   name: 虚偽排除説
-  kind: issue
+  kind: theory
   parents: [jihaku-housoku-no-konkyo]
 
 - id: jinken-yougo-setsu
   name: 人権擁護説
-  kind: issue
+  kind: theory
   parents: [jihaku-housoku-no-konkyo]
 
 - id: ihou-haijo-setsu
   name: 違法排除説
-  kind: issue
+  kind: theory
   parents: [jihaku-housoku-no-konkyo]
 
 - id: yakusoku-ni-yoru-jihaku
@@ -721,3 +723,11 @@
   name: 即決裁判手続
   kind: issue
   parents: [keiso-tokubetsu-tetsuzuki]
+
+# ============================================================
+# 参照（ref）  ※ほかの科目に属するテーマを、この科目の構造にも出す
+# ============================================================
+
+- ref: reijou-shugi
+  parents: [keiso-sousa]
+  memo: 令状主義は憲法（被疑者・被告人の権利）に属する。刑訴では捜査全体にかかわる大きなテーマなので、捜査の下にも目印付きで出す

@@ -16,6 +16,12 @@
   --issue-soft: #e5f0e9;
   --poly: #9a5b00;
   --poly-soft: #fbefd9;
+  --theory: #6b3fa0;
+  --theory-soft: #efe7f8;
+  --xref: #0f6b75;
+  --xref-soft: #dff1f3;
+  --old: #8a3b2e;
+  --old-soft: #f6e4e0;
   --hit: #fff1a8;
   --font-display: "Shippori Mincho B1", "Hiragino Mincho ProN", "Yu Mincho", serif;
   --font-body: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", "Meiryo", sans-serif;
@@ -25,13 +31,15 @@
   :root:not([data-theme="light"]) {
     --bg: #12151c; --surface: #1a1f29; --fg: #e4e8ef; --muted: #9aa3b4; --line: #2e3542;
     --structure: #9db2f0; --structure-soft: #232d48; --issue: #8fc7a4; --issue-soft: #1f3328;
-    --poly: #f0b860; --poly-soft: #3a2c14; --hit: #5a4b10; color-scheme: dark;
+    --poly: #f0b860; --poly-soft: #3a2c14; --hit: #5a4b10; 
+    --theory: #c5a6ee; --theory-soft: #2e2340; --xref: #7fd0d8; --xref-soft: #163338; --old: #eba393; --old-soft: #3d221d; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #12151c; --surface: #1a1f29; --fg: #e4e8ef; --muted: #9aa3b4; --line: #2e3542;
   --structure: #9db2f0; --structure-soft: #232d48; --issue: #8fc7a4; --issue-soft: #1f3328;
-  --poly: #f0b860; --poly-soft: #3a2c14; --hit: #5a4b10; color-scheme: dark;
+  --poly: #f0b860; --poly-soft: #3a2c14; --hit: #5a4b10; 
+  --theory: #c5a6ee; --theory-soft: #2e2340; --xref: #7fd0d8; --xref-soft: #163338; --old: #eba393; --old-soft: #3d221d; color-scheme: dark;
 }
 * { box-sizing: border-box; }
 body {
@@ -76,6 +84,14 @@ details[open] > summary .caret { transform: rotate(90deg); }
 .chip { font-size: 0.7rem; padding: 0 6px; border-radius: 999px; line-height: 1.6; white-space: nowrap; }
 .chip.i { background: var(--issue-soft); color: var(--issue); }
 .chip.poly { background: var(--poly-soft); color: var(--poly); }
+.chip.th { background: var(--theory-soft); color: var(--theory); }
+.chip.xref { background: var(--xref-soft); color: var(--xref); }
+.chip.old { background: var(--old-soft); color: var(--old); }
+.name.th { color: var(--theory); }
+.name.from { font-style: italic; }
+.tree li.theory-group { margin: 4px 0 6px; }
+.group-label { display: inline-block; font-size: 0.72rem; letter-spacing: 0.08em; color: var(--theory); border: 1px dashed var(--theory); border-radius: 4px; padding: 0 6px; margin-left: 4px; }
+.tree li.theory-group > ul { border-left: 1px dashed var(--theory); }
 .dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
 .detail {
   position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px);
@@ -106,6 +122,10 @@ details[open] > summary .caret { transform: rotate(90deg); }
       <span><b style="color:var(--structure)">太字の紺</b>＝構造エリア</span>
       <span><span class="chip i">論点1</span>＝論点エリア（数字は段）</span>
       <span><span class="chip poly">親2</span>＝親を複数持つ（それぞれの親の下に出てくる）</span>
+      <span><span class="group-label">学説</span>＝学説のまとまり（段には数えない）</span>
+      <span><span class="chip xref">↙ 憲法から</span>＝ほかの科目に属するテーマ</span>
+      <span><span class="chip xref">↗ 刑事訴訟法からも参照</span>＝ほかの科目にも出てくる</span>
+      <span><span class="chip old">旧制度</span>＝法改正前の古い制度</span>
     </div>
   </header>
   <div class="toolbar">
@@ -124,7 +144,11 @@ details[open] > summary .caret { transform: rotate(90deg); }
 const DATA = /*DATA*/[];
 // REF: ほかの科目のテーマ。関連の名前を出すためだけに使い、樹形図には出さない
 const REF = /*REF*/[];
+// REFD: この科目のテーマを参照しているほかの科目 {id: [科目名, ...]}
+const REFD = /*REFD*/{};
 const byId = Object.fromEntries([...REF, ...DATA].map(t => [t.id, t]));
+const inTree = new Set(DATA.map(t => t.id));
+const OWN = DATA.filter(t => !t._from);
 const children = {};
 DATA.forEach(t => (t.parents || []).forEach(p => (children[p] ||= []).push(t.id)));
 const nextOf = {}, prevOf = {};
@@ -136,16 +160,18 @@ const relatedOf = id => {
 };
 const issueLevel = id => {
   const t = byId[id];
-  if (t.kind !== 'issue') return 0;
   const p = (t.parents || [])[0];
+  if (t.kind === 'theory') return p ? issueLevel(p) : 0;  // 学説は段に数えない（親の段を返す）
+  if (t.kind !== 'issue') return 0;
   return p && byId[p]?.kind === 'issue' ? issueLevel(p) + 1 : 1;
 };
 let selected = null;
 let query = '';
 
-const nS = DATA.filter(t => t.kind === 'structure').length;
+const nK = k => OWN.filter(t => t.kind === k).length;
 document.getElementById('stats').textContent =
-  `テーマ ${DATA.length} 件（構造 ${nS}・論点 ${DATA.length - nS}）／複数の親 ${DATA.filter(t => (t.parents || []).length > 1).length} 件`;
+  `テーマ ${OWN.length} 件（構造 ${nK('structure')}・論点 ${nK('issue')}・学説 ${nK('theory')}）／複数の親 ${OWN.filter(t => (t.parents || []).length > 1).length} 件`
+  + (DATA.length > OWN.length ? `／ほかの科目から ${DATA.length - OWN.length} 件` : '');
 
 const matches = t => !query || [t.name, t.id, ...(t.aliases || [])].some(s => s.toLowerCase().includes(query));
 const memo = {};
@@ -157,17 +183,24 @@ const subtreeHit = id => {
 
 function rowHTML(t) {
   const lvl = issueLevel(t.id);
-  const kind = t.kind === 'structure' ? 's' : 'i';
+  const kind = { structure: 's', issue: 'i', theory: 'th' }[t.kind];
   const np = (t.parents || []).length;
-  return `<span class="name ${kind}${t.id === selected ? ' selected' : ''}${query && matches(t) ? ' hit' : ''}" data-id="${t.id}" tabindex="0">${t.name}</span>`
-    + (lvl ? `<span class="chip i">論点${lvl}</span>` : '')
-    + (np > 1 ? `<span class="chip poly" title="親：${t.parents.map(p => byId[p]?.name).join('・')}">親${np}</span>` : '');
+  return `<span class="name ${kind}${t._from ? ' from' : ''}${t.id === selected ? ' selected' : ''}${query && matches(t) ? ' hit' : ''}" data-id="${t.id}" tabindex="0">${t.name}</span>`
+    + (t.kind === 'issue' && lvl ? `<span class="chip i">論点${lvl}</span>` : '')
+    + (t.kind === 'theory' ? '<span class="chip th">学説</span>' : '')
+    + (np > 1 ? `<span class="chip poly" title="親：${t.parents.map(p => byId[p]?.name).join('・')}">親${np}</span>` : '')
+    + (t.old_law ? `<span class="chip old">旧制度（${t.old_law}年改正前）</span>` : '')
+    + (t._from ? `<span class="chip xref">↙ ${t._from}から</span>` : '')
+    + (REFD[t.id] ? `<span class="chip xref">↗ ${REFD[t.id].join('・')}からも参照</span>` : '');
 }
 
 function nodeHTML(id) {
   if (query && !subtreeHit(id)) return '';
   const t = byId[id];
-  const kids = (children[id] || []).map(nodeHTML).join('');
+  const kidIds = children[id] || [];
+  const theories = kidIds.filter(k => byId[k].kind === 'theory').map(nodeHTML).join('');
+  const kids = kidIds.filter(k => byId[k].kind !== 'theory').map(nodeHTML).join('')
+    + (theories ? `<li class="theory-group"><span class="group-label">学説</span><ul>${theories}</ul></li>` : '');
   if (!kids) return `<li><div class="row"><span class="caret"></span>${rowHTML(t)}</div></li>`;
   return `<li><details open data-kind="${t.kind}"><summary><div class="row"><span class="caret">▶</span>${rowHTML(t)}</div></summary><ul>${kids}</ul></details></li>`;
 }
@@ -179,7 +212,7 @@ function renderTree() {
 }
 
 const linkList = ids => ids.length
-  ? ids.map(i => byId[i]?._from
+  ? ids.map(i => byId[i]?._from && !inTree.has(i)
       ? `<span class="tag">${byId[i].name}（${byId[i]._from}）</span>`
       : `<button class="link" type="button" data-go="${i}">${byId[i]?.name ?? i}</button>`).join('')
   : '<span class="none">なし</span>';
@@ -193,14 +226,18 @@ function renderDetail() {
     <h2>${t.name}</h2>
     <div class="id">${t.id}</div>
     <dl>
-      <div><dt>種類</dt><dd>${t.kind === 'structure' ? '構造エリア' : `論点エリア（第${lvl}段）`}</dd></div>
-      <div><dt>親</dt><dd>${linkList(t.parents || [])}</dd></div>
+      <div><dt>種類</dt><dd>${{ structure: '構造エリア', issue: `論点エリア（第${lvl}段）`, theory: `学説（第${lvl}段の論点の下。段には数えない）` }[t.kind]}</dd></div>
+      ${t.old_law ? `<div><dt>旧制度</dt><dd>${t.old_law}年の改正前の制度</dd></div>` : ''}
+      ${t._from ? `<div><dt>所属</dt><dd>${t._from}（元の親：${linkList(t._home_parents || [])}）</dd></div>` : ''}
+      ${REFD[t.id] ? `<div><dt>ほかの科目からの参照</dt><dd>${REFD[t.id].map(s => `<span class="tag">${s}</span>`).join('')}</dd></div>` : ''}
+      <div><dt>${t._from ? 'この科目での置き場所' : '親'}</dt><dd>${linkList(t.parents || [])}</dd></div>
       <div><dt>子</dt><dd>${linkList(children[t.id] || [])}</dd></div>
       <div><dt>エイリアス</dt><dd>${(t.aliases || []).length ? t.aliases.map(a => `<span class="tag">${a}</span>`).join('') : '<span class="none">なし</span>'}</dd></div>
       ${(nextOf[t.id] || prevOf[t.id]) ? `<div><dt>前の段階</dt><dd>${linkList(prevOf[t.id] || [])}</dd></div>
       <div><dt>次の段階</dt><dd>${linkList(nextOf[t.id] || [])}</dd></div>` : ''}
       <div><dt>関連</dt><dd>${linkList(relatedOf(t.id))}</dd></div>
       <div><dt>メモ</dt><dd class="memo">${t.memo || '<span class="none">なし</span>'}</dd></div>
+      ${t._home_memo ? `<div><dt>メモ（${t._from}側）</dt><dd class="memo">${t._home_memo}</dd></div>` : ''}
     </dl>`;
 }
 
@@ -224,7 +261,7 @@ document.getElementById('tree').addEventListener('keydown', e => {
 });
 document.getElementById('detail').addEventListener('click', e => {
   const g = e.target.closest('[data-go]');
-  if (g && byId[g.dataset.go] && !byId[g.dataset.go]._from) {
+  if (g && inTree.has(g.dataset.go)) {
     if (query) { query = ''; document.getElementById('q').value = ''; }
     select(g.dataset.go, true);
   }

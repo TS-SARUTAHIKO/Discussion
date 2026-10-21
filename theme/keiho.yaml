@@ -4,6 +4,8 @@
 # - kind: structure（構造エリア）／ issue（論点エリア）
 # - 構造エリアと論点の第1段は親を複数持てる。論点の第2・3段は親（論点）を1つだけ持つ
 # - 論点エリアは最大3段
+# - kind: theory（学説）は論点の子として1段使うが、論点の「最大3段」には数えない。ページでは「学説」のグループにまとめて出す
+# - old_law（改正の年）は、法改正で変わった古い制度のテーマに付ける目印。改正前の過去問はこちらのタグにする
 # - 書いていない項目（aliases / related / memo）は空とみなす
 # - related は向きを持たないので、片側にだけ書く。憲法のテーマとの関連もこちら側に書いた
 # - 構造エリアの ID は科目の接頭辞（keiho-）を付ける。論点の ID は接頭辞なし
@@ -379,19 +381,19 @@
 
 - id: jouken-setsu
   name: 条件説
-  kind: issue
+  kind: theory
   parents: [inga-kankei-no-handan-kijun]
 
 - id: soutou-inga-kankei-setsu
   name: 相当因果関係説
-  kind: issue
+  kind: theory
   parents: [inga-kankei-no-handan-kijun]
 
 - id: kiken-no-genjitsuka
   name: 危険の現実化
-  kind: issue
+  kind: theory
   parents: [inga-kankei-no-handan-kijun]
-  memo: 近年の判例の判断の枠組み。学説の名前ではないが、判断基準の一つとして説と並べた
+  memo: 近年の判例の判断の枠組み。学説の名前ではないが、判断基準の一つとして説と並べ、学説のグループに入れた
 
 - id: kainyuu-jijou
   name: 介在事情と因果関係
@@ -422,13 +424,13 @@
 
 - id: houteiteki-fugou-setsu
   name: 法定的符合説
-  kind: issue
+  kind: theory
   parents: [houhou-no-sakugo]
   memo: 客体の錯誤でも問題になるが、論点は親を1つしか持てないので、争いが目立つ方法の錯誤の下に置いた
 
 - id: gutaiteki-fugou-setsu
   name: 具体的符合説
-  kind: issue
+  kind: theory
   parents: [houhou-no-sakugo]
 
 - id: inga-kankei-no-sakugo
@@ -457,12 +459,12 @@
 
 - id: kyuu-kashitsu-ron
   name: 旧過失論
-  kind: issue
+  kind: theory
   parents: [kashitsu-han-no-kouzou]
 
 - id: shin-kashitsu-ron
   name: 新過失論
-  kind: issue
+  kind: theory
   parents: [kashitsu-han-no-kouzou]
 
 - id: shinrai-no-gensoku
@@ -479,12 +481,12 @@
 
 - id: koui-mukachi-ron
   name: 行為無価値論
-  kind: issue
+  kind: theory
   parents: [ihousei-no-honshitsu]
 
 - id: kekka-mukachi-ron
   name: 結果無価値論
-  kind: issue
+  kind: theory
   parents: [ihousei-no-honshitsu]
 
 - id: kabatsuteki-ihousei
@@ -573,12 +575,12 @@
 
 - id: gutaiteki-kiken-setsu
   name: 具体的危険説
-  kind: issue
+  kind: theory
   parents: [funou-han]
 
 - id: kyakkanteki-kiken-setsu
   name: 客観的危険説
-  kind: issue
+  kind: theory
   parents: [funou-han]
 
 - id: chuushi-han
@@ -653,7 +655,23 @@
   name: 拘禁刑
   kind: issue
   parents: [keiho-keibatsu]
-  memo: 2025年6月から懲役と禁錮が拘禁刑にまとめられた。「懲役」「禁錮」はエイリアスにしない（中身が違う、古い制度のため）。古い過去問のタグをどうするかは人が確認
+  related: [choueki, kinko]
+  memo: 2025年6月から懲役と禁錮が拘禁刑にまとめられた。「懲役」「禁錮」はエイリアスにせず、古い制度のテーマとして別に立てて目印（old_law）を付けた
+
+- id: choueki
+  name: 懲役
+  kind: issue
+  parents: [keiho-keibatsu]
+  old_law: 2025
+  memo: 2025年6月の改正で拘禁刑にまとめられた古い制度。改正前の過去問はこのタグにする
+
+- id: kinko
+  name: 禁錮
+  kind: issue
+  parents: [keiho-keibatsu]
+  old_law: 2025
+  related: [choueki]
+  memo: 2025年6月の改正で拘禁刑にまとめられた古い制度。改正前の過去問はこのタグにする
 
 # ---- 生命・身体・自由 ----
 
@@ -691,12 +709,12 @@
 
 - id: juukyoken-setsu
   name: 住居権説
-  kind: issue
+  kind: theory
   parents: [juukyo-shinnyuu-zai-no-hogo-houeki]
 
 - id: heion-setsu
   name: 平穏説
-  kind: issue
+  kind: theory
   parents: [juukyo-shinnyuu-zai-no-hogo-houeki]
 
 # ---- 名誉・信用・業務 ----
@@ -724,17 +742,17 @@
 
 - id: honken-setsu
   name: 本権説
-  kind: issue
+  kind: theory
   parents: [zaisan-han-no-hogo-houeki]
 
 - id: senyuu-setsu
   name: 占有説
-  kind: issue
+  kind: theory
   parents: [zaisan-han-no-hogo-houeki]
 
 - id: chuukan-setsu-zaisan-han
   name: 中間説（財産犯の保護法益）
-  kind: issue
+  kind: theory
   parents: [zaisan-han-no-hogo-houeki]
 
 - id: keihou-jou-no-senyuu
@@ -841,12 +859,12 @@
 
 - id: kengen-ranyou-setsu
   name: 権限濫用説
-  kind: issue
+  kind: theory
   parents: [hainin-zai-no-honshitsu]
 
 - id: haishin-setsu
   name: 背信説
-  kind: issue
+  kind: theory
   parents: [hainin-zai-no-honshitsu]
 
 - id: touhin-zai-no-honshitsu

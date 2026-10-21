@@ -3,7 +3,9 @@
 使い方:
   python3 theme/build_tree.py theme/keiho.yaml theme/keiho_tree.html --ref theme/kenpo.yaml
 
---ref に渡した YAML（ほかの科目）は樹形図には出さず、関連の名前を表示するためだけに使う。
+--ref に渡した YAML（ほかの科目）は樹形図には出さず、関連の名前や参照（ref）の目印を出すためだけに使う。
+この科目の ref の行は、参照先のテーマを「よその科目から来ている」目印付きで樹形図に出す。
+ほかの科目の ref の行がこの科目のテーマを指していれば、そのテーマに「ほかの科目からも参照」の目印を付ける。
 ページの題名は「<最上位のテーマの名前>テーマ樹形図」になる。
 """
 import argparse
@@ -14,7 +16,9 @@ import yaml
 
 
 def load(path):
-    return yaml.safe_load(Path(path).read_text(encoding="utf-8")) or []
+    """テーマと ref の行を分けて返す。"""
+    rows = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or []
+    return [t for t in rows if "ref" not in t], [t for t in rows if "ref" in t]
 
 
 def root_name(items):
@@ -88,16 +92,26 @@ def main():
     ap.add_argument("--ref", nargs="*", default=[])
     args = ap.parse_args()
 
-    items = load(args.src)
-    ref = []
+    items, my_refs = load(args.src)
+    my_ids = {t["id"] for t in items}
+    ref, refd = [], {}
     for path in args.ref:
-        other = load(path)
+        other, other_refs = load(path)
         label = root_name(other)
-        ref += [{"id": t["id"], "name": t["name"], "related": t.get("related") or [], "_from": label} for t in other]
+        ref += [{**t, "_from": label} for t in other]
+        for r in other_refs:
+            if r["ref"] in my_ids:
+                refd.setdefault(r["ref"], []).append(label)
+    by_ref = {t["id"]: t for t in ref}
+    # この科目の ref の行は、参照先のテーマを置き場所（parents）だけ差し替えて樹形図に出す
+    shown = [{**by_ref[r["ref"]], "parents": r.get("parents") or [], "_home_parents": by_ref[r["ref"]].get("parents") or [],
+              "_home_memo": by_ref[r["ref"]].get("memo", ""), "memo": r.get("memo", "")}
+             for r in my_refs if r["ref"] in by_ref]
 
     template = (Path(__file__).parent / "tree_template.html").read_text(encoding="utf-8")
     html = (template.replace("__TITLE__", f"{root_name(items)}テーマ樹形図")
-            .replace("/*DATA*/[]", to_js(items))
+            .replace("/*DATA*/[]", to_js(items + shown))
+            .replace("/*REFD*/{}", json.dumps(refd, ensure_ascii=False))
             .replace("/*REF*/[]", to_js(ref))
             .replace("<!--FLOW-->", flow_html(items)))
     Path(args.out).write_text(html, encoding="utf-8")
