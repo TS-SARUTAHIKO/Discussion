@@ -101,16 +101,16 @@
   memo: 35条（法令行為・正当業務行為）
 
 - id: keiho-seitou-boui
-  name: 正当防衛
+  name: 正当防衛（刑法）
   kind: structure
   parents: [keiho-ihousei-sokyaku-jiyuu]
-  memo: 民法720条にも正当防衛があるが、刑法での使い方が中心なので名前に科目を添えていない（メモ参照）
+  memo: 民法720条にも正当防衛があるので科目名を添えた（ぶつかる言葉は全部の科目で添える決まり）
 
 - id: keiho-kinkyuu-hinan
-  name: 緊急避難
+  name: 緊急避難（刑法）
   kind: structure
   parents: [keiho-ihousei-sokyaku-jiyuu]
-  memo: 正当防衛と同じく、民法側を作るときに「緊急避難（民法）」を立てる想定
+  memo: 民法720条2項にも緊急避難があるので科目名を添えた
 
 # 責任
 
