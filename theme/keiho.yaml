@@ -106,6 +106,7 @@
   name: 正当防衛（刑法）
   kind: structure
   parents: [keiho-ihousei-sokyaku-jiyuu]
+  articles: [刑法36条1項]
   memo: 民法720条にも正当防衛があるので科目名を添えた（ぶつかる言葉は全部の科目で添える決まり）
 
 - id: keiho-kinkyuu-hinan
@@ -519,6 +520,7 @@
   name: 過剰防衛
   kind: issue
   parents: [keiho-seitou-boui, keiho-sekinin]
+  articles: [刑法36条2項]
   memo: 36条2項で刑を減免できる理由を、違法の減少とみるか責任の減少とみるかで分かれる
 
 - id: gosou-boui
@@ -655,6 +657,7 @@
   name: 拘禁刑
   kind: issue
   parents: [keiho-keibatsu]
+  articles: [刑法12条]
   related: [choueki, kinko]
   memo: 2025年6月から懲役と禁錮が拘禁刑にまとめられた。「懲役」「禁錮」はエイリアスにせず、古い制度のテーマとして別に立てて目印（old_law）を付けた
 
@@ -689,6 +692,7 @@
   name: 同時傷害の特例
   kind: issue
   parents: [keiho-seimei-shintai, keiho-kyouhan]
+  articles: [刑法207条]
   memo: 207条。傷害罪の規定だが、共犯の成立範囲と一緒に問われることが多い
 
 - id: hogo-sekinin-sha-iki
@@ -723,6 +727,7 @@
   name: 名誉毀損罪における真実性の証明
   kind: issue
   parents: [keiho-meiyo]
+  articles: [刑法230条の2, 憲法21条1項]
   related: [kenpo-hyougen-no-jiyuu]
   memo: 230条の2。表現の自由との調整の規定なので、憲法の表現の自由と関連でつないだ
 
@@ -775,6 +780,7 @@
   name: 親族相盗例
   kind: issue
   parents: [keiho-zaisan]
+  articles: [刑法244条]
   aliases: [親族間の犯罪に関する特例]
   memo: 244条。窃盗罪の規定だが、詐欺・恐喝・横領にも準用されるので財産に対する罪の下に置いた
 

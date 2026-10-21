@@ -6,6 +6,7 @@
 - kind: theory（学説）は論点の子として1段使うが、論点の「最大3段」には数えない。親は論点1つだけで、学説の下に子は置かない
 - ref の行（ref と parents だけ）は、ほかの科目のテーマをこの科目の構造にも目印付きで出すための参照。テーマの数には入れない
 - old_law（改正の年）は、法改正で変わった古い制度のテーマに付ける目印
+- articles は関係する条文番号のリスト。「法令名＋条番号」で書き、ほかの法令の条文もまぜてよい（例：刑法230条の2、憲法21条1項）
 """
 import re
 import sys
@@ -13,7 +14,9 @@ import sys
 import yaml
 
 ID_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
-KEYS = {"id", "name", "kind", "parents", "aliases", "related", "next", "old_law", "memo"}
+# 法令名＋条番号（枝番・項・号は任意）。例：民法709条、刑法230条の2、民法398条の2第1項、刑事訴訟法337条1号
+ARTICLE_RE = re.compile(r"^\D+?\d+条(の\d+)*(第?\d+項)?(\d+号)?$")
+KEYS = {"id", "name", "kind", "parents", "aliases", "related", "next", "old_law", "articles", "memo"}
 REF_KEYS = {"ref", "parents", "memo"}
 
 
@@ -44,6 +47,14 @@ def check(items, refs=()):
             errors.append(f"{tid}: kind が不正 {t.get('kind')!r}")
         if "old_law" in t and not (isinstance(t["old_law"], int) and 1868 <= t["old_law"] <= 2100):
             errors.append(f"{tid}: old_law は改正の年（整数）で書く")
+        arts = t.get("articles") or []
+        for a in arts:
+            if not isinstance(a, str) or not ARTICLE_RE.match(a):
+                errors.append(f"{tid}: 条文番号の形が不正 {a!r}（例：民法709条、刑法230条の2、刑事訴訟法198条2項）")
+        if len(arts) != len(set(map(str, arts))):
+            errors.append(f"{tid}: 条文番号が重複")
+        if arts and t.get("kind") == "theory":
+            errors.append(f"{tid}: 学説には条文番号を付けない（親の論点に付ける）")
     by_id = {t["id"]: t for t in items if t.get("id")}
 
     names = {}

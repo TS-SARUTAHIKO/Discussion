@@ -315,6 +315,7 @@
   name: 公共の福祉
   kind: issue
   parents: [kenpo-jinken-souron]
+  articles: [憲法12条, 憲法13条, 憲法22条1項, 憲法29条2項]
   memo: 「人権相互の矛盾・衝突を調整する原理」はエイリアスにしない（一元的内在制約説という一つの立場のため）
 
 - id: ichigenteki-gaizai-seiyaku-setsu
@@ -518,6 +519,7 @@
   name: 令状主義
   kind: issue
   parents: [kenpo-higisha-hikokunin-no-kenri]
+  articles: [憲法33条, 憲法35条]
   memo: 刑事訴訟法では構造エリアに上げたほうがよいかもしれない（メモ参照）
 
 - id: gyousei-chousa-to-reijou-shugi
@@ -535,6 +537,7 @@
   name: 一事不再理
   kind: issue
   parents: [kenpo-higisha-hikokunin-no-kenri]
+  articles: [憲法39条]
   related: [nijuu-no-kiken]
   memo: 39条の読み方には「一事不再理」「二重処罰の禁止」「二重の危険」の立場があり、言い換えではない
 

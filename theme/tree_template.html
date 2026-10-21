@@ -129,7 +129,7 @@ details[open] > summary .caret { transform: rotate(90deg); }
     </div>
   </header>
   <div class="toolbar">
-    <input id="q" type="search" placeholder="名前・エイリアス・ID で絞り込み" aria-label="絞り込み">
+    <input id="q" type="search" placeholder="名前・エイリアス・条文番号・ID で絞り込み" aria-label="絞り込み">
     <button id="open-all" type="button">すべて開く</button>
     <button id="close-issues" type="button">論点を閉じる</button>
   </div>
@@ -173,7 +173,7 @@ document.getElementById('stats').textContent =
   `テーマ ${OWN.length} 件（構造 ${nK('structure')}・論点 ${nK('issue')}・学説 ${nK('theory')}）／複数の親 ${OWN.filter(t => (t.parents || []).length > 1).length} 件`
   + (DATA.length > OWN.length ? `／ほかの科目から ${DATA.length - OWN.length} 件` : '');
 
-const matches = t => !query || [t.name, t.id, ...(t.aliases || [])].some(s => s.toLowerCase().includes(query));
+const matches = t => !query || [t.name, t.id, ...(t.aliases || []), ...(t.articles || [])].some(s => s.toLowerCase().includes(query));
 const memo = {};
 const subtreeHit = id => {
   if (id in memo) return memo[id];
@@ -232,6 +232,7 @@ function renderDetail() {
       ${REFD[t.id] ? `<div><dt>ほかの科目からの参照</dt><dd>${REFD[t.id].map(s => `<span class="tag">${s}</span>`).join('')}</dd></div>` : ''}
       <div><dt>${t._from ? 'この科目での置き場所' : '親'}</dt><dd>${linkList(t.parents || [])}</dd></div>
       <div><dt>子</dt><dd>${linkList(children[t.id] || [])}</dd></div>
+      ${(t.articles || []).length ? `<div><dt>条文</dt><dd>${t.articles.map(a => `<span class="tag">${a}</span>`).join('')}</dd></div>` : ''}
       <div><dt>エイリアス</dt><dd>${(t.aliases || []).length ? t.aliases.map(a => `<span class="tag">${a}</span>`).join('') : '<span class="none">なし</span>'}</dd></div>
       ${(nextOf[t.id] || prevOf[t.id]) ? `<div><dt>前の段階</dt><dd>${linkList(prevOf[t.id] || [])}</dd></div>
       <div><dt>次の段階</dt><dd>${linkList(nextOf[t.id] || [])}</dd></div>` : ''}

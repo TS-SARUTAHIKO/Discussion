@@ -442,6 +442,7 @@
   name: 黙秘権
   kind: issue
   parents: [keiso-higisha-hikokunin-no-bougyo, keiso-torishirabe]
+  articles: [刑事訴訟法198条2項, 刑事訴訟法311条1項, 憲法38条1項]
   related: [jiko-fusai-kyohi-tokken]
   memo: 憲法の「自己負罪拒否特権」とは保障の範囲が違うのでエイリアスにせず、関連でつないだ
 
@@ -690,6 +691,7 @@
   name: 一事不再理効
   kind: issue
   parents: [keiso-saiban-no-kouryoku]
+  articles: [刑事訴訟法337条1号, 憲法39条]
   related: [ichiji-fusairi]
   memo: 憲法39条の「一事不再理」と関連でつないだ
 
